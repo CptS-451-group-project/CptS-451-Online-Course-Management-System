@@ -77,7 +77,7 @@
 ## **2. Table Design**
 
 **Table Name:** Course_Details  
-**Purpose:** Store the details of each course every term
+**Purpose:** Store the details of each course's general information.
 
 | Attribute Name | Data Type | Constraints | Description |
 | :---- | :---- | :---- | :---- |
@@ -86,7 +86,7 @@
 | description | VARCHAR(255) |  | Course Description |
 
 **Table Name:** Course_Terms  
-**Purpose:** Stores the details of each user
+**Purpose:** Stores the details of a class offered on a specific term.
 
 | Attribute Name | Data Type | Constraints | Description |
 | :---- | :---- | :---- | :---- |
@@ -154,7 +154,7 @@ Course_Terms.professor_Id→User.user_id
 Users.role_name→Roles.role_name  
 Logs.log_type→Log_type.log_type  
 Logs.user_id→Users.user_id  
-Logs.course_id→Course.course_id   
+Logs.course_id→Course_Terms.course_term_id 
 Users.role_name→Roles.role_name  
 EnrollmentStatus.user_id→Users.User_id  
 EnrollmentStatus.course_id→Course_Details.course_id

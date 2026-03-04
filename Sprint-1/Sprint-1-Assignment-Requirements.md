@@ -93,7 +93,7 @@ Ensure the video is clear, concise, and all team members participate in the pres
 
 # Sprint Report Template
 
-`sprint_report_template-1.md` Download `sprint_report_template-1.md`
+`sprint_report_template.md` Download `sprint_report_template.md`
 
 Add this to your repo
 
