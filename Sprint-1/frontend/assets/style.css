@@ -60,6 +60,10 @@ td {
   text-align: left;
 }
 
+.selected {
+  background-color: #AAAAAA;
+}
+
 .cartBox {
   border: none;
 
@@ -88,6 +92,10 @@ td {
   margin-bottom: 15px;
 
   text-align: left;
+}
+
+.details > p:nth-child(2n + 1) {
+  text-align: right;
 }
 
 .footer {
