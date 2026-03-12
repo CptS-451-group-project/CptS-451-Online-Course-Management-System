@@ -17,7 +17,6 @@
 | **US-004** | Feature | High | **Approve/Reject Enrollment:** As an administrator, I want to approve or reject course enrollments. | - Admin can change status from 'pending' to 'enrolled' or 'rejected'.<br>- System updates database. | FR-3.2 |
 | **US-005** | Feature | Medium | **Log User Activity:** As a system admin, I want all user logins logged for security. | - Login events are recorded in `Logs` table.<br>- Includes timestamp and user ID. | FR-2.1 |
 | **US-006** | Feature | Medium | **Activity Logging:** As a system, I want to log enrollment actions and course changes. | - Enrollment/withdrawal actions recorded.<br>- Course modification events recorded. | FR-2.2, FR-2.3 |
-| **US-007** | Feature | Low | **Engagement Metrics:** As an admin, I want to see course engagement metrics. | - Report showing enrollment frequency. | FR-3.3 |
 | **SYS-001**| Task | **Critical**| **Database Implementation:** Create the initial database schema. | - Tables created: Users, Course_Details, Course_Terms, Enrollment_Status, Logs, Roles, Log_Types.<br>- Foreign keys and constraints applied. | Sect 2 |
 | **SYS-002**| Task | High | **Authentication Setup:** Implement basic login/auth structure. | - Password hashing (NFR-1.5).<br>- Role-based access control setup (NFR-1.1). | NFR-1.1 |
 
