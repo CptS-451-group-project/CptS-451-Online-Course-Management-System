@@ -1,3 +1,108 @@
 body {
+  width: 90%;
+  margin: auto;
+}
 
+* {
+  margin: 10px;
+}
+
+button {
+  padding: 4px;
+
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+td {
+  border: 1px solid black;
+}
+
+.header {
+  display: flex;
+
+  margin: 15px;
+}
+
+.header > * {
+  padding-left: 15px
+}
+
+.header > button {
+  height: 35px;
+}
+
+.userinfo {
+  margin-left: auto;
+
+  text-align: right;
+}
+
+.body {
+  display: grid;
+
+  grid-template: auto auto / auto auto;
+}
+
+.body > * {  
+  display: flex;
+  flex-direction: column;
+
+  border: 1px solid black;
+  border-radius: 6px;
+
+  text-align: center;
+}
+
+.searchBox {
+  flex-direction: row;
+  
+  text-align: left;
+}
+
+.cartBox {
+  border: none;
+
+  margin-left: auto;
+  width: 20%;
+
+  text-align: right;
+}
+
+.coursesBox {}
+
+.enrollBox {}
+
+.box {
+  padding: 10px;
+
+  border: 1px solid black;
+}
+
+.details {
+  display: grid;
+  grid-template: auto auto auto auto / auto auto;
+
+  margin-left: 15px;
+  margin-right: 15px;
+  margin-bottom: 15px;
+
+  text-align: left;
+}
+
+.footer {
+  width: 100%;
+
+  margin: 0;
+  margin-top: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+
+  border-top: 1px solid black;
+}
+
+.enrollBox > .footer > Button {
+  margin-left: auto;
 }
