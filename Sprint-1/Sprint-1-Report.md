@@ -1,72 +1,52 @@
-# Sprint x Report
-
-**Video Link:**
+# Sprint x Report 
+Video Link: [https://www.youtube.com/watch?v=UBV_Pu96aDU](https://www.youtube.com/watch?v=UBV_Pu96aDU)
 
 ## What's New (User Facing)
-- Feature 1 or Bug Fix 1
-- Feature 2 or Bug Fix 2
-- Feature n or Bug Fix n
+* Enroll in course
+* Browse a course
+* View enrollments for a course
+
 
 ## Work Summary (Developer Facing)
-Provide a one paragraph synposis of what your team accomplished this sprint. Don't repeat the "What's New" list of features. Instead, help the instructor understand how you went about the work described there, any barriers you overcame, and any significant learnings for your team.
+This sprint focused on the finalization of our database design and the creation of a few front-end mockups. A key achievement was correcting the relational schema by adding the necessary foreign key and check constraints, which were originally missing. We also developed an Entity-Relationship (ER) diagram that accurately reflects the project's constraints and requirements. Based on this finalized relational schema, we designed several mockups to illustrate the intended functionality of our project.
 
 ## Unfinished Work
-If applicable, explain the work you did not finish in this sprint. For issues/user stories in the current sprint that have not been closed:
-- (a) Any progress toward completion of the issues has been clearly tracked (by checking the checkboxes of acceptance criteria)
-- (b) A comment has been added to the issue to explain why the issue could not be completed (e.g., "we ran out of time" or "we did not anticipate it would be so much work")
-- (c) The issue is added to a subsequent sprint, so that it can be addressed later.
+We did not create mockups for admin features like viewing or processing enrollments due to time constraints. Another piece of unfinished work is that we have yet to implement the database because we are still comparing services for cost and usability. The reason for unfinished work is that we chose to dedicate our available time to the database design, ER diagrams, and student mockups in sprint 1.
 
 ## Completed Issues/User Stories
 Here are links to the issues that we completed in this sprint:
-- URL of issue 1
-- URL of issue 2
-- URL of issue n
 
-<details>
-<summary>Desirables (Remove this section when you save the file):</summary>
-
-- Each issue should be assigned to a milestone
-- Each completed issue should be assigned to a pull request
-- Each completed pull request should include a link to a "Before and After" video
-- All team members who contributed to the issue should be assigned to it on GitHub
-- Each issue should be assigned story points using a label
-- Story points contribution of each team member should be indicated in a comment
-</details>
-
-## Incomplete Issues/User Stories
-Here are links to issues we worked on but did not complete in this sprint:
-- URL of issue 1 &mdash; <em>One sentence explanation of why issue was not completed</em>
-- URL of issue 2 &mdash; <em>One sentence explanation of why issue was not completed</em>
-- URL of issue n &mdash; <em>One sentence explanation of why issue was not completed</em>
-
-<details>
-<summary>Examples of explanations (Remove this section when you save the file):</summary>
-
-- "We ran into a complication we did not anticipate (explain briefly)."
-- "We decided that the feature did not add sufficient value for us to work on it in this sprint (explain briefly)."
-- "We could not reproduce the bug" (explain briefly).
-- "We did not get to this issue because..." (explain briefly)
-</details>
+ * [Browse courses mockup](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/issues/6)
+ * [Enroll in course mockup](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/issues/7)
+ * [Approve/reject enrollment mockup](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/issues/9)
+ 
+ ## Incomplete Issues/User Stories
+ Here are links to issues we worked on but did not complete in this sprint:
+ 
+ * [View Pending enrollments full implementation](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/issues/14) <Due to time constraints this admin view mockup was not completed.>
+ * [Setup database](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/issues/17) <Due to time constraints we have not finalized the DBMS that we are going to use.>
+ * [View logs mockup](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/issues/18) <Due to time constraints we have not decided how are view logs feature will look like.>
 
 ## Code Files for Review
 Please review the following code files, which were actively developed during this sprint, for quality:
-- [Name of code file 1](https://github.com/your_repo/file_extension)
-- [Name of code file 2](https://github.com/your_repo/file_extension)
-- [Name of code file 3](https://github.com/your_repo/file_extension)
+ * [index.html](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/blob/frontend/Sprint-1/frontend/index.html)
+ * [styles.css](https://github.com/CptS-451-group-project/CptS-451-Online-Course-Management-System/blob/frontend/Sprint-1/frontend/assets/style.css)
 
+ 
 ## Retrospective Summary
+Here's what went well:
+ * Developed draft of Entity Relationship Diagram
+* Created front-end mockups (browse and enroll in courses feature)
+* Designed and finalized relational schema (database design)
 
-**Here's what went well:**
-- Item 1
-- Item 2
-- Item x
+ 
+Here's what we'd like to improve:
+  * Finalize front-end mockups
+* Make final changes to our Entity Relationship Diagram
+* Making changes to the styling to our mockup such as the browser and enroll in courses page
 
-**Here's what we'd like to improve:**
-- Item 1
-- Item 2
-- Item x
-
-**Here are changes we plan to implement in the next sprint:**
-- Item 1
-- Item 2
-- Item x
+  
+Here are changes we plan to implement in the next sprint:
+   * Develop the administrative interface mock-up, specifically for the functionality to approve or reject course enrollments.
+* Initiate the setup of the database to store essential User and course data.
+* Integrate the necessary back-end logic to make the student and administrator features operational within the front-end application.
