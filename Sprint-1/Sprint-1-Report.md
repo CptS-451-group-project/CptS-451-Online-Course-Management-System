@@ -2,6 +2,7 @@
 Video Link: [https://www.youtube.com/watch?v=UBV_Pu96aDU](https://www.youtube.com/watch?v=UBV_Pu96aDU)
 
 ## What's New (User Facing)
+User interface for:
 * Enroll in course
 * Browse a course
 * View enrollments for a course
