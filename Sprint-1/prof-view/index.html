@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Course Management System - Professor View</title>
+
+    <link rel="stylesheet" href="assets/style.css">
+  </head>
+  <body>
+    <div class="header">
+        <Button>Menu</Button>
+        <h3>Course Management System</h3>
+        <div class="userinfo">
+            <p><Strong>Dr. John AP</Strong></p>
+            <p>12345678</p>
+        </div>
+    </div>
+    <div class="body">
+      <div class="searchBox">
+            <input placeholder="Search"></input>
+            <Button>Filters</Button>
+            <Button>Sort By</Button>
+      </div>
+      <div class="cartBox">
+            <Button>Options</Button>
+      </div>
+      <div class="coursesBox">
+            <h2>Your Courses</h2>
+            <table>
+              <tr>
+                <th>Name</th>
+                <th>Course ID</th>
+                <th>Times</th>
+                <th>Availability</th>
+              </tr>
+
+              <tr class="selected">
+                <td>Data Structures IV</td>
+                <td>CPTS 224</td>
+                <td>1:00-2:00pm MoWeFr</td>
+                <td>Open</td>
+              </tr>
+              <tr>
+                <td>Data Structures V</td>
+                <td>CPTS 225</td>
+                <td>2:10-3:00pm MoWeFr</td>
+                <td>Waitlist</td>
+              </tr>
+              <tr>
+                <td>Data Structures VI</td>
+                <td>CPTS 226</td>
+                <td>1:00-8:00pm MoWeFr</td>
+                <td>Full</td>
+              </tr>
+
+          </table>
+            <div class="footer">
+                <button>< Prev</button>
+                <p>1 of 1</p>
+                <button>Next ></button>
+            </div>
+      </div>
+      <div class="enrollBox">
+            <h2>Enrolled Students</h2>
+            <h4>CPTS 224</h4>
+            <div style="margin: 15px;">
+              <table>
+                <tr>
+                  <th>Student Name</th>
+                  <th>Student ID</th>
+                  <th>Enrollment Status</th>
+                  <th>Actions</th>
+                </tr>
+                <tr>
+                  <td>Jane Doe</td>
+                  <td>11122333</td>
+                  <td>Enrolled</td>
+                  <td>
+                    <button>Cancel</button>
+                    <button>Remove</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Bob Smith</td>
+                  <td>99988777</td>
+                  <td>Waitlist</td>
+                  <td>
+                    <button>Approve</button>
+                    <button>Remove</button>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="footer">
+                <!-- Empty footer space left intentionally like the student view -->
+            </div>
+      </div>
+    </div>
+  </body>
+</html>
