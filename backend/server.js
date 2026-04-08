@@ -1,22 +1,17 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { Pool } = require('pg');
+const pool = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// PostgreSQL Connection Pool
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false // Required by Render to connect from outside
-    }
-});
-
 // Middleware
 app.use(cors()); // Allow cross-origin requests (e.g. from your React frontend)
 app.use(express.json()); // Parse incoming JSON requests
+
+// Define Routes
+app.use('/api/auth', require('./routes/auth'));
 
 // Health check route for Render to know your server is up
 app.get('/health', async (req, res) => {
