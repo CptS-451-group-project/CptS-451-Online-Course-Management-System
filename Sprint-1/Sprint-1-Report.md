@@ -1,6 +1,5 @@
-# Sprint x Report
-
-**Video Link:**
+# Sprint 1 Report 
+Video Link: [https://www.youtube.com/watch?v=UBV_Pu96aDU](https://www.youtube.com/watch?v=UBV_Pu96aDU)
 
 ## What's New (User Facing)
 - Feature 1 or Bug Fix 1
