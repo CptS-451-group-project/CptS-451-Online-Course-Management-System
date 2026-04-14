@@ -95,3 +95,51 @@ CREATE TABLE IF NOT EXISTS Logs (
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE RESTRICT,
     FOREIGN KEY (course_term_id) REFERENCES Course_Terms(course_term_id) ON DELETE SET NULL
 );
+
+-- race condition - if 2 students enroll in a course at the exact same time
+-- Create the custom function to check capacity (max_students)
+CREATE OR REPLACE FUNCTION check_course_capacity()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_max_capacity INT;
+    v_current_enrolled INT;
+BEGIN
+    -- Only check capacity if the student is actually trying to enroll ('e')
+    -- We don't care about limits if they are just pending ('p') or waitlisting ('w')
+    IF NEW.status != 'e' THEN
+        RETURN NEW;
+    END IF;
+
+    -- 1. Lock the Course_Terms row and get the max capacity
+    SELECT max_students INTO v_max_capacity
+    FROM Course_Terms
+    WHERE course_term_id = NEW.course_term_id
+    FOR UPDATE;
+
+    -- 2. If max_students is NULL, it means infinite capacity. Let them in.
+    IF v_max_capacity IS NULL THEN
+        RETURN NEW;
+    END IF;
+
+    -- 3. Count how many students are currently enrolled in this specific term
+    SELECT COUNT(*) INTO v_current_enrolled
+    FROM Enrollment_Status
+    WHERE course_term_id = NEW.course_term_id 
+      AND status = 'e';
+
+    -- 4. Check if the class is full
+    IF v_current_enrolled >= v_max_capacity THEN
+        -- This aborts the transaction and sends an error message back to the application
+        RAISE EXCEPTION 'Enrollment failed: Course is at maximum capacity (%)', v_max_capacity;
+    END IF;
+
+    -- 5. If we get here, there is space! Allow the insert/update to proceed.
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Attach the function to the Enrollment_Status table
+CREATE TRIGGER trg_enforce_capacity
+BEFORE INSERT OR UPDATE ON Enrollment_Status
+FOR EACH ROW
+EXECUTE FUNCTION check_course_capacity();
