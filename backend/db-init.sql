@@ -11,6 +11,9 @@ ON CONFLICT DO NOTHING;
 -- 2. Create Users Table
 CREATE TABLE IF NOT EXISTS Users (
     user_id SERIAL PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    middle_initial VARCHAR(1),
+    last_name VARCHAR(255) NOT NULL,
     email VARCHAR(45) UNIQUE CHECK (email LIKE '%@%'),
     password_hash VARCHAR(255) NOT NULL,
     role_name VARCHAR(32) NOT NULL,
@@ -89,6 +92,6 @@ CREATE TABLE IF NOT EXISTS Logs (
     course_term_id INT, -- Left as NULLable so system logs (like Login) don't require a course
     content VARCHAR(255),
     FOREIGN KEY (log_type) REFERENCES Log_Types(log_type) ON DELETE RESTRICT,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE RESTRICT,
     FOREIGN KEY (course_term_id) REFERENCES Course_Terms(course_term_id) ON DELETE SET NULL
 );
