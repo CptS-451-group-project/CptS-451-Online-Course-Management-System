@@ -54,6 +54,29 @@ td {
   text-align: center;
 }
 
+.login {
+  display: grid;
+
+  grid-template: auto auto auto / 40% 50%;
+
+  width: 50%;
+
+  margin: auto;
+  margin-top: 30%;
+
+  padding: 15px;
+
+  border: 1px solid black;
+}
+
+.login > p:nth-child(2n + 1) {
+  text-align: right;
+}
+
+.login > button {
+  grid-column: 2 / 2;
+}
+
 .searchBox {
   flex-direction: row;
   
@@ -101,8 +124,21 @@ td {
 .footer {
   width: 100%;
 
-  margin: 0;
+  margin: auto;
   margin-top: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+
+  border-top: 1px solid black;
+}
+
+.pageFooter {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
 
   display: flex;
   align-items: center;
