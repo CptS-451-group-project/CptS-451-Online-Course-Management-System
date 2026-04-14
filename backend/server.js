@@ -12,6 +12,8 @@ app.use(express.json()); // Parse incoming JSON requests
 
 // Define Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/courses', require('./routes/courses'));
+app.use('/api/enroll', require('./routes/enrollments'));
 
 // Health check route for Render to know your server is up
 app.get('/health', async (req, res) => {

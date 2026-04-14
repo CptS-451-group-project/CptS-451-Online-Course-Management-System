@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS Course_Terms (
 CREATE TABLE IF NOT EXISTS Enrollment_Status (
     course_term_id INT NOT NULL,
     user_id INT NOT NULL,
-    status VARCHAR(1) NOT NULL DEFAULT 'p', -- p: pending, e: enrolled, w: waitlist
+    status VARCHAR(1) NOT NULL DEFAULT 'p' CHECK (status IN ('p', 'e', 'w')), -- p: pending, e: enrolled, w: waitlist
     timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (course_term_id, user_id),
     FOREIGN KEY (course_term_id) REFERENCES Course_Terms(course_term_id) ON DELETE CASCADE,
