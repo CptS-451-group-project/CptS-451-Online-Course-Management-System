@@ -2,8 +2,44 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-// Advanced Query Route: Fetch high-demand / near-capacity courses
-//
+// NEW
+// @route   GET /api/courses/overloaded
+// @desc    Fetch overloaded students (based on 'having count()' value set)
+router.get('/overloaded', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                u.user_id,
+                u.email, 
+                u.role_name,
+                t.term_name, 
+                COUNT(es.course_term_id) AS total_enrolled_classes
+            FROM Users u
+            JOIN Enrollment_Status es ON u.user_id = es.user_id
+            JOIN Course_Terms ct ON es.course_term_id = ct.course_term_id
+            JOIN Terms t ON ct.term_id = t.term_id
+            WHERE u.role_name = 'Student' 
+              AND es.status = 'e'
+            GROUP BY 
+                u.user_id, 
+                u.email, 
+                u.role_name,
+                t.term_name
+            HAVING COUNT(es.course_term_id) > 1
+            ORDER BY total_enrolled_classes DESC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error fetching overloaded students" });
+    }
+});
+
+
+// NEW
+// @route   GET /api/courses/high-demand
+// @desc    Fetch high-demand / near-capacity courses
 router.get('/high-demand', async (req, res) => {
     try {
         const query = `
@@ -24,7 +60,7 @@ router.get('/high-demand', async (req, res) => {
                 ct.professor_id,
                 ct.availability,
                 ct.max_students
-            HAVING COUNT(es.user_id) >= (ct.max_students * 0.9)
+            HAVING COUNT(es.user_id) >= (ct.max_students * 0.7)
             ORDER BY currently_enrolled DESC;
         `;
         const result = await pool.query(query);

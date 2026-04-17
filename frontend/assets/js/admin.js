@@ -73,7 +73,7 @@ window.addEventListener("load", () => {
         const row = document.createElement("tr");
         
         const capacityBadge = filter === 'high-demand' 
-            ? ` (${course.currently_enrolled}/${course.max_students} Full)` 
+            ? ` (${course.currently_enrolled}/${course.max_students} enrolled)` 
             : '';
             
         row.innerHTML = `
@@ -92,9 +92,13 @@ window.addEventListener("load", () => {
     } catch (err) { console.error(err); }
   };
 
-  const loadStudents = async () => {
+  const loadStudents = async (filter = 'all') => {
     try {
-      const response = await fetch('http://localhost:5000/api/users');
+      const endpoint = filter === 'overloaded'
+          ? 'http://localhost:5000/api/users/overloaded'
+          : 'http://localhost:5000/api/users';
+          
+      const response = await fetch(endpoint);
       const users = await response.json();
       
       studentsTable.innerHTML = `
@@ -102,16 +106,27 @@ window.addEventListener("load", () => {
           <th>Student ID</th>
           <th>Email</th>
           <th>Role</th>
+          ${filter === 'overloaded' ? '<th>Term</th><th>Enrolled Classes</th>' : ''}
           <th>Actions</th>
         </tr>
       `;
 
       users.forEach(user => {
         const row = document.createElement("tr");
+        
+        let extraCols = '';
+        if (filter === 'overloaded') {
+          extraCols = `
+            <td>${user.term_name}</td>
+            <td><span style="color:red;">${user.total_enrolled_classes} Classes</span></td>
+          `;
+        }
+        
         row.innerHTML = `
           <td>${user.user_id}</td>
           <td>${user.email}</td>
           <td>${user.role_name}</td>
+          ${extraCols}
           <td>
             <button onclick="window.location.href='http://localhost:5000/admin/student-edit.html?studentId=${user.user_id}'">Edit</button>
             <button onclick="deleteUser(${user.user_id})">Remove</button>
@@ -155,7 +170,17 @@ window.addEventListener("load", () => {
   // --- EVENT LISTENERS ---
   if (courseFilterDropdown) {
     courseFilterDropdown.addEventListener('change', (e) => {
-      loadCourses(e.target.value);
+      const val = e.target.value;
+      if (val === 'high-demand') {
+          loadCourses('high-demand');
+          loadStudents('all');
+      } else if (val === 'overloaded') {
+          loadCourses('all');
+          loadStudents('overloaded');
+      } else {
+          loadCourses('all');
+          loadStudents('all');
+      }
     });
   }
 

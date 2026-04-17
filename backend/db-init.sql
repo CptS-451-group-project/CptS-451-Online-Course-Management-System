@@ -144,14 +144,19 @@ CREATE TABLE IF NOT EXISTS Logs (
 -- FOR EACH ROW
 -- EXECUTE FUNCTION check_course_capacity();
 
--- For testing only - inserting dummy enrollment data
+-- FOR TESTING: inserting dummy data
 
 -- 1. Create a dummy Course Detail
 INSERT INTO Course_Details (course_name, description) 
 VALUES ('CPTS 451 - Introduction to Databases', 'Introduction Database Design')
 ON CONFLICT (course_name) DO NOTHING;
 
--- 1.5 Create a Term (Required since the schema was normalized)
+-- 1.2 Create a dummy Course Detail for new course
+INSERT INTO Course_Details (course_name, description) 
+VALUES ('CPTS 360 - Systems Programming', 'Systems Prog')
+ON CONFLICT (course_name) DO NOTHING;
+
+-- -- 1.5 Create a Term (Required since the schema was normalized)
 INSERT INTO Terms (term_name, start_date, end_date) 
 VALUES ('Spring 2026', '2026-01-10', '2026-05-01')
 ON CONFLICT (term_name) DO NOTHING;
@@ -162,6 +167,14 @@ VALUES (
     (SELECT course_id FROM Course_Details WHERE course_name = 'CPTS 451 - Introduction to Databases' LIMIT 1),
     (SELECT term_id FROM Terms WHERE term_name = 'Spring 2026' LIMIT 1),
     'Spark 102', TRUE, 5
+);
+
+-- 2.1 Create a Course Term for new course 
+INSERT INTO Course_Terms (course_id, term_id, location, availability, max_students) 
+VALUES (
+    (SELECT course_id FROM Course_Details WHERE course_name = 'CPTS 360 - Systems Programming' LIMIT 1),
+    (SELECT term_id FROM Terms WHERE term_name = 'Spring 2026' LIMIT 1),
+    'Spark 160', TRUE, 5
 );
 
 -- 3. Insert Dummy Students (Ensure the 'Student' role exists in your Roles table)
@@ -180,19 +193,32 @@ SELECT
     user_id,
     'e',
     CURRENT_TIMESTAMP
-FROM Users WHERE email IN ('david@wsu.edu', 'nick@wsu.edu', 'panashe@wsu.edu', 'jaden@wsu.edu', 'PK@wsu.edu')
+FROM Users WHERE email IN ('david@wsu.edu', 'nick@wsu.edu', 'panashe@wsu.edu', 'jaden@wsu.edu')
+ON CONFLICT DO NOTHING;
+
+-- 4.2 enroll student to course
+INSERT INTO Enrollment_Status (course_term_id, user_id, status, timestamp)
+SELECT 
+    (SELECT course_term_id FROM Course_Terms ct JOIN Course_Details cd ON ct.course_id = cd.course_id WHERE cd.course_name = 'CPTS 360 - Systems Programming' ORDER BY course_term_id DESC LIMIT 1),
+    user_id,
+    'e',
+    CURRENT_TIMESTAMP
+FROM Users WHERE email IN ('david@wsu.edu', 'nick@wsu.edu')
 ON CONFLICT DO NOTHING;
 
 
---- For testing only - deleting dummy enrollment data
+--- FOR TESTING ONLY - deleting dummy data
 -- -- Delete the dummy students. This will CASCADE and delete their pending/enrolled statuses too!
 
 -- DELETE FROM Users 
--- WHERE email IN ('dummy1@wsu.edu', 'dummy2@wsu.edu', 'dummy3@wsu.edu', 'dummy4@wsu.edu', 'dummy5@wsu.edu');
+-- WHERE email IN ('david@wsu.edu', 'nick@wsu.edu', 'panashe@wsu.edu', 'jaden@wsu.edu', 'PK@wsu.edu');
 
 -- -- Delete the dummy course. This will CASCADE and delete the Course_Terms and any remaining enrollments!
 -- DELETE FROM Course_Details 
 -- WHERE course_name = 'CPTS 451 - Introduction to Database Systems';
+
+-- DELETE FROM Course_Details 
+-- WHERE course_name = 'CPTS 360 - Systems Programming';
 
 -- -- (Optional) Clean up the dummy term
 -- DELETE FROM Terms 
