@@ -26,6 +26,26 @@ router.post('/', async (req, res) => {
     }
 });
 
+// @route   GET /api/enroll 
+// @desc    Get all enrollments across all courses (for admin)
+router.get('/', async (req, res) => {
+    try {
+        const query = `
+            SELECT es.status, es.timestamp, es.course_term_id, es.user_id, u.email as student_email, cd.course_name
+            FROM Enrollment_Status es
+            JOIN Users u ON es.user_id = u.user_id
+            JOIN Course_Terms ct ON es.course_term_id = ct.course_term_id
+            JOIN Course_Details cd ON ct.course_id = cd.course_id
+            ORDER BY cd.course_name ASC, u.email ASC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error getting all enrollments." });
+    }
+});
+
 // @route   GET /api/enroll/:user_id  
 // @desc    Get all enrolled courses for a specific student
 router.get('/:user_id', async (req, res) => {
@@ -75,6 +95,25 @@ router.put('/:course_term_id/:user_id', async (req, res) => {
         console.error(err.message);
         // E.g. violated the CHECK(status IN ('p','e','w')) constraint we added in the db
         res.status(400).json({ error: "Failed to update enrollment status." });
+    }
+});
+
+// @route   DELETE /api/enroll/:course_term_id/:user_id
+// @desc    Admin or Student removes an enrollment entirely
+router.delete('/:course_term_id/:user_id', async (req, res) => {
+    const { course_term_id, user_id } = req.params;
+    try {
+        const result = await pool.query(
+            'DELETE FROM Enrollment_Status WHERE course_term_id = $1 AND user_id = $2 RETURNING *',
+            [course_term_id, user_id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: "Enrollment not found." });
+        }
+        res.json({ message: "Enrollment removed successfully!" });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Failed to delete enrollment." });
     }
 });
 

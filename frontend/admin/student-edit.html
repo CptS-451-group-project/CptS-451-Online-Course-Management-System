@@ -2,9 +2,11 @@
 <html>
   <head>
     <title>Edit Student</title>
-    <script src"/assets/js/student-edit.js"></script>
+    <script src="/frontend/assets/js/student-edit.js"></script>
   </head>
   <body>
+    <button onclick="window.location.href='/frontend/admin/index.html'">< Back to Dashboard</button>
+    <h2>Edit / Create Student</h2>
     <form>
       <label for="studentId">Student ID:</label><br>
       <input type="text" id="studentId" name="courseId"><br>
@@ -14,8 +16,6 @@
       <input type="text" id="newPassword" name="newPassword"><br>
     </form>
     <div>
-      <Button id="delete">Delete</Button>
-      <Button id="modify">Modify</Button>
       <Button id="create">Create</Button>
     </div>
   </body>

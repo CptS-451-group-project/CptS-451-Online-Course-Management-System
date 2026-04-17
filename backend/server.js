@@ -12,8 +12,13 @@ app.use(express.json()); // Parse incoming JSON requests
 
 // Define Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/users'));
 app.use('/api/courses', require('./routes/courses'));
 app.use('/api/enroll', require('./routes/enrollments'));
+
+const path = require('path');
+// Serve static files from the frontend directory
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // Health check route for Render to know your server is up
 app.get('/health', async (req, res) => {
@@ -32,16 +37,6 @@ app.get('/health', async (req, res) => {
         console.error("Database connection error: ", err);
         res.status(500).json({ status: 'ERROR', message: 'Database connection failed' });
     }
-});
-
-// Basic test route
-app.get('/api/courses', (req, res) => {
-    // In the future, this will be replaced with a real database query
-    const mockCourses = [
-        { id: 'CPTS 224', name: 'Data Structures IV', availability: 'Open' },
-        { id: 'CPTS 225', name: 'Data Structures V', availability: 'Waitlist' }
-    ];
-    res.json(mockCourses);
 });
 
 // Start Server

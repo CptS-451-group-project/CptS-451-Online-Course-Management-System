@@ -3,8 +3,8 @@
   <head>
     <title>Course Management System - Professor View</title>
 
-    <link rel="stylesheet" href="/assets/style.css">
-    <script src="/assets/js/admin.js"></script>
+    <link rel="stylesheet" href="/frontend/assets/style.css">
+    <script src="/frontend/assets/js/admin.js"></script>
   </head>
   <body>
     <div class="header">
@@ -28,34 +28,16 @@
       </div>
       <div class="coursesBox">
             <h2>All Courses</h2>
+            <button onclick="window.location.href='/frontend/admin/course-edit.html'">+ Add New Course</button>
             <table id="coursesTable">
               <tr>
                 <th>Name</th>
-                <th>Course ID</th>
+                <th>Course Term ID</th>
                 <th>Times</th>
                 <th>Availability</th>
+                <th>Actions</th> <!-- NEW -->
               </tr>
-
-              <tr>
-                <td>Data Structures IV</td>
-                <td>CPTS 224</td>
-                <td>1:00-2:00pm MoWeFr</td>
-                <td>Open</td>
-              </tr>
-              <tr>
-                <td>Data Structures V</td>
-                <td>CPTS 225</td>
-                <td>2:10-3:00pm MoWeFr</td>
-                <td>Waitlist</td>
-              </tr>
-              <tr>
-                <td>Data Structures VI</td>
-                <td>CPTS 226</td>
-                <td>1:00-8:00pm MoWeFr</td>
-                <td>Full</td>
-              </tr>
-
-          </table>
+            </table> <!-- Removed hardcoded rows here to let JS populate -->
             <div class="footer">
                 <button>< Prev</button>
                 <p id="courseTablePages">1 of 1</p>
@@ -63,24 +45,16 @@
             </div>
       </div>
       <div class="coursesBox">
-            <h2>All Students</h2>
+            <h2>All Students / Users</h2>
+            <button onclick="window.location.href='/frontend/admin/student-edit.html'">+ Add New Student</button>
               <table id="studentsTable">
                 <tr>
-                  <th>Student Name</th>
                   <th>Student ID</th>
-                  <th>Student Email</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Actions</th> <!-- NEW -->
                 </tr>
-                <tr>
-                  <td>Jane Doe</td>
-                  <td>11122333</td>
-                  <td>jane.doe@cms.edu</td>
-                </tr>
-                <tr>
-                  <td>Bob Smith</td>
-                  <td>99988777</td>
-                  <td>bob.smith@cms.edu</td>
-                </tr>
-              </table>
+              </table> <!-- Removed hardcoded rows here to let JS populate -->
               <div class="footer">
                 <button>< Prev</button>
                   <p id="courseTablePages">1 of 1</p>
@@ -100,30 +74,12 @@
 
       <table id="enrollmentsTable">
                 <tr>
-                  <th>Course Id</th>
-                  <th>Student Id</th>
+                  <th>Course Name</th>
+                  <th>Student Email</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  <th>Actions</th> <!-- NEW -->
                 </tr>
-                <tr>
-                  <td>Jane Doe</td>
-                  <td>11122333</td>
-                  <td>Enrolled</td>
-                  <td>
-                    <button>Hold</button>
-                    <button>Remove</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Bob Smith</td>
-                  <td>99988777</td>
-                  <td>Waitlist</td>
-                  <td>
-                    <button>Hold</button>
-              :</q>      <button>Remove</button>
-                  </td>
-            
-      </table>
+      </table> <!-- Removed hardcoded rows here to let JS populate -->
       <div class="footer">
           <button>< Prev</button>
               <p id="courseTablePages">1 of 1</p>
