@@ -11,6 +11,7 @@ app.use(cors()); // Allow cross-origin requests (e.g. from your React frontend)
 app.use(express.json()); // Parse incoming JSON requests
 
 // Define Routes
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/courses', require('./routes/courses'));

@@ -18,12 +18,10 @@
     <div class="body">
       <div class="searchBox">
             <input placeholder="Search"></input>
-            <Button>Filters</Button>
-            <Button>Sort By</Button>
-      </div>
-            <div class="searchBox">
-            <input placeholder="Search"></input>
-            <Button>Filters</Button>
+            <select id="courseFilterDropdown">
+              <option value="all">All Courses</option>
+              <option value="high-demand">Near max Capacity</option>
+            </select>
             <Button>Sort By</Button>
       </div>
       <div class="coursesBox">
@@ -62,7 +60,7 @@
               </div>
       </div>
     </div>
-     <!--
+     
     <h2>All Enrollments</h2>
     <div class="coursesBox">  
       </div>
@@ -81,11 +79,11 @@
                 </tr>
       </table> 
       <div class="footer">
-          <button>< Prev</button>
+          <button> Prev></button>
               <p id="courseTablePages">1 of 1</p>
           <button>Next ></button>
       </div>
-    </div> -->
+    </div>
 
   </body>
 </html>

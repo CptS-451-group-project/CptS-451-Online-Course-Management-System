@@ -5,6 +5,7 @@ window.addEventListener("load", () => {
   const coursesTable     = document.getElementById("coursesTable");
   const studentsTable    = document.getElementById("studentsTable");
   const enrollmentsTable = document.getElementById("enrollmentsTable");
+  const courseFilterDropdown = document.getElementById("courseFilterDropdown");
 
   // --- ACTIONS (Delete Functions) ---
   window.deleteCourse = async (id) => {
@@ -46,10 +47,14 @@ window.addEventListener("load", () => {
   };
 
   // --- DATA LOADERS ---
-  const loadCourses = async () => {
+  const loadCourses = async (filter = 'all') => {
     console.log("ran");
     try {
-      const response = await fetch('http://localhost:5000/api/courses');
+      const endpoint = filter === 'high-demand' 
+          ? 'http://localhost:5000/api/courses/high-demand' 
+          : 'http://localhost:5000/api/courses';
+          
+      const response = await fetch(endpoint);
       if (!response.ok) throw new Error("Failed to load courses");
       const courses = await response.json();
       
@@ -66,8 +71,13 @@ window.addEventListener("load", () => {
 
       courses.forEach(course => {
         const row = document.createElement("tr");
+        
+        const capacityBadge = filter === 'high-demand' 
+            ? ` (${course.currently_enrolled}/${course.max_students} Full)` 
+            : '';
+            
         row.innerHTML = `
-          <td>${course.course_name}</td>
+          <td>${course.course_name}${capacityBadge}</td>
           <td>${course.course_term_id}</td>
           <td>${course.professor_id}</td>
           <td>${course.availability ? 'Open' : 'Closed'}</td>
@@ -141,6 +151,13 @@ window.addEventListener("load", () => {
       });
     } catch (err) { console.error(err); }
   };
+
+  // --- EVENT LISTENERS ---
+  if (courseFilterDropdown) {
+    courseFilterDropdown.addEventListener('change', (e) => {
+      loadCourses(e.target.value);
+    });
+  }
 
   // Automatically fetch on page load
   if (coursesTable) loadCourses();
