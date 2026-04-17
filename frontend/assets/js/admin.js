@@ -10,10 +10,9 @@ window.addEventListener("load", () => {
   window.deleteCourse = async (id) => {
     if (!confirm("Are you sure you want to delete this course?")) return;
     try {
-      const res = await fetch(`/api/courses/${id}`, { method: 'DELETE' });
+      const res = await fetch(`http://localhost:5000/api/courses/${id}`, { method: 'DELETE' });
       const errInfo = await res.json();
       if (!res.ok) throw new Error(errInfo.error || "Unknown Error");
-      alert("Course deleted!");
       loadCourses();
       loadEnrollments();
     } catch(err) {
@@ -24,10 +23,9 @@ window.addEventListener("load", () => {
   window.deleteUser = async (id) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
-      const res = await fetch(`/api/users/${id}`, { method: 'DELETE' });
+      const res = await fetch(`http://localhost:5000/api/users/${id}`, { method: 'DELETE' });
       const errInfo = await res.json();
       if (!res.ok) throw new Error(errInfo.error || "Unknown Error");
-      alert("User deleted!");
       loadStudents();
       loadEnrollments();
     } catch(err) {
@@ -38,10 +36,9 @@ window.addEventListener("load", () => {
   window.deleteEnrollment = async (course_term_id, user_id) => {
     if (!confirm("Are you sure you want to remove this enrollment?")) return;
     try {
-      const res = await fetch(`/api/enroll/${course_term_id}/${user_id}`, { method: 'DELETE' });
+      const res = await fetch(`http://localhost:5000/api/enroll/${course_term_id}/${user_id}`, { method: 'DELETE' });
       const errInfo = await res.json();
       if (!res.ok) throw new Error(errInfo.error || "Unknown Error");
-      alert("Enrollment removed!");
       loadEnrollments();
     } catch(err) {
       alert("Action denied by database: " + err.message);
@@ -50,8 +47,9 @@ window.addEventListener("load", () => {
 
   // --- DATA LOADERS ---
   const loadCourses = async () => {
+    console.log("ran");
     try {
-      const response = await fetch('/api/courses');
+      const response = await fetch('http://localhost:5000/api/courses');
       if (!response.ok) throw new Error("Failed to load courses");
       const courses = await response.json();
       
@@ -59,32 +57,34 @@ window.addEventListener("load", () => {
         <tr>
           <th>Name</th>
           <th>Course Term ID</th>
-          <th>Times</th>
+          <th>Professor ID</th>
           <th>Availability</th>
           <th>Actions</th>
         </tr>
       `;
+      console.log(courses);
 
       courses.forEach(course => {
         const row = document.createElement("tr");
         row.innerHTML = `
           <td>${course.course_name}</td>
           <td>${course.course_term_id}</td>
-          <td>${course.class_times}</td>
+          <td>${course.professor_id}</td>
           <td>${course.availability ? 'Open' : 'Closed'}</td>
           <td>
-            <button onclick="window.location.href='/frontend/admin/course-edit.html'">Edit</button>
+            <button onclick="window.location.href='/admin/course-edit.html?courseId=${course.course_term_id}'">Edit</button>
             <button onclick="deleteCourse(${course.course_term_id})">Remove</button>
           </td>
         `;
         coursesTable.appendChild(row);
+        console.log("ran");
       });
     } catch (err) { console.error(err); }
   };
 
   const loadStudents = async () => {
     try {
-      const response = await fetch('/api/users');
+      const response = await fetch('http://localhost:5000/api/users');
       const users = await response.json();
       
       studentsTable.innerHTML = `
@@ -103,7 +103,7 @@ window.addEventListener("load", () => {
           <td>${user.email}</td>
           <td>${user.role_name}</td>
           <td>
-            <button onclick="window.location.href='/frontend/admin/student-edit.html'">Edit</button>
+            <button onclick="window.location.href='http://localhost:5000/admin/student-edit.html?studentId=${user.user_id}'">Edit</button>
             <button onclick="deleteUser(${user.user_id})">Remove</button>
           </td>
         `;
@@ -114,7 +114,7 @@ window.addEventListener("load", () => {
 
   const loadEnrollments = async () => {
     try {
-      const response = await fetch('/api/enroll');
+      const response = await fetch('http://localhost:5000/api/enroll');
       const enrollments = await response.json();
       
       enrollmentsTable.innerHTML = `

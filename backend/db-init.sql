@@ -11,9 +11,9 @@ ON CONFLICT DO NOTHING;
 -- 2. Create Users Table
 CREATE TABLE IF NOT EXISTS Users (
     user_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255),
     middle_initial VARCHAR(1),
-    last_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255),
     email VARCHAR(45) UNIQUE CHECK (email LIKE '%@%'),
     password_hash VARCHAR(255) NOT NULL,
     role_name VARCHAR(32) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS Course_Details (
 CREATE TABLE IF NOT EXISTS Course_Terms (
     course_term_id SERIAL PRIMARY KEY,
     course_id INT NOT NULL,
-    term_id INT NOT NULL,
+    term_id INT,
     professor_id INT,
     location VARCHAR(64) NOT NULL,
     availability BOOLEAN NOT NULL DEFAULT TRUE,

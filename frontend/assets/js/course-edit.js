@@ -1,7 +1,7 @@
 "use strict"
 window.addEventListener("load", () => {
   // Element Objects of all the fields and buttons in the html
-  const courseIdFld    = document.getElementById("courseID");
+  const courseIdFld    = document.getElementById("courseId");
   const courseNameFld  = document.getElementById("courseName");
   const courseTimeFld  = document.getElementById("courseTime");
   const locationFld    = document.getElementById("location");
@@ -9,6 +9,13 @@ window.addEventListener("load", () => {
   const descriptionFld = document.getElementById("description");
 
   const createBtn = document.getElementById("create");
+
+  // Get studentId if providedstudentId
+  const courseId = window.location.search.substring(10);
+  courseIdFld.value = courseId;
+
+
+
 
   createBtn.addEventListener("click", async (e) => {
     e.preventDefault(); // Prevent default form submission from reloading page
@@ -18,6 +25,20 @@ window.addEventListener("load", () => {
       alert("Please enter a course name.");
       return;
     }
+
+    // Remove course if they already exist (modify not a method in backend yet)
+    if(courseId != "") {
+      try {
+      const res = await fetch(`http://localhost:5000/api/courses/${courseId}`, { method: 'DELETE' });
+      const errInfo = await res.json();
+      if (!res.ok) throw new Error(errInfo.error || "Unknown Error");
+
+      console.log("here!");
+    } catch (err) {
+      console.error(err);
+      alert("Network Error: " + err.message);
+    }
+    } 
 
     const payload = {
       course_name: courseNameFld.value,
@@ -32,7 +53,7 @@ window.addEventListener("load", () => {
     };
 
     try {
-      const response = await fetch('/api/courses', {
+      const response = await fetch('http://localhost:5000/api/courses', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -46,8 +67,7 @@ window.addEventListener("load", () => {
         return;
       }
 
-      alert("Success! Course created.");
-      window.location.href = '/frontend/admin/index.html'; // Go back to dashboard!
+      window.location.href = '/admin'; // Go back to dashboard!
       
     } catch (err) {
       console.error(err);

@@ -8,12 +8,12 @@ window.addEventListener("load", () => {
 		let userId = userIdField.value;
 		let passwd = passwdField.value;
 
-    //sendQuery(userId, passwd);
-    redirect();
+    sendQuery(userId, passwd);
+    //redirect();
 	}
 
 	let sendQuery = function(userId, passwd) {
-    		fetch(`/api/auth/login?userId=${encodeURIComponent(userId)}&password=${encodeURIComponent(passwd)}`)
+    		fetch(`http://localhost:5000/api/auth/login?userId=${encodeURIComponent(userId)}&password=${encodeURIComponent(passwd)}`)
     		.then((res) => {
     	  		if (!res.ok) {
     	    			throw new Error(`Server responded with status ${res.status}`);
@@ -26,7 +26,6 @@ window.addEventListener("load", () => {
    		 .catch((err) => {
       			console.error(err);
       			subtitle.textContent = "Error contacting the server. See console for details.";
-    			redirect();
 		});
   	}
 

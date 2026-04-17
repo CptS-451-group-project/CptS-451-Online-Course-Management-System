@@ -3,8 +3,8 @@
   <head>
     <title>Course Management System - Professor View</title>
 
-    <link rel="stylesheet" href="/frontend/assets/style.css">
-    <script src="/frontend/assets/js/admin.js"></script>
+    <link rel="stylesheet" href="/assets/style.css">
+    <script src="/assets/js/admin.js"></script>
   </head>
   <body>
     <div class="header">
@@ -28,7 +28,7 @@
       </div>
       <div class="coursesBox">
             <h2>All Courses</h2>
-            <button onclick="window.location.href='/frontend/admin/course-edit.html'">+ Add New Course</button>
+            <button onclick="window.location.href='/admin/course-edit.html'">+ Add New Course</button>
             <table id="coursesTable">
               <tr>
                 <th>Name</th>
@@ -46,7 +46,7 @@
       </div>
       <div class="coursesBox">
             <h2>All Students / Users</h2>
-            <button onclick="window.location.href='/frontend/admin/student-edit.html'">+ Add New Student</button>
+            <button onclick="window.location.href='/admin/student-edit.html'">+ Add New Student</button>
               <table id="studentsTable">
                 <tr>
                   <th>Student ID</th>
@@ -62,7 +62,7 @@
               </div>
       </div>
     </div>
-     
+     <!--
     <h2>All Enrollments</h2>
     <div class="coursesBox">  
       </div>
@@ -77,15 +77,15 @@
                   <th>Course Name</th>
                   <th>Student Email</th>
                   <th>Status</th>
-                  <th>Actions</th> <!-- NEW -->
+                  <th>Actions</th>
                 </tr>
-      </table> <!-- Removed hardcoded rows here to let JS populate -->
+      </table> 
       <div class="footer">
           <button>< Prev</button>
               <p id="courseTablePages">1 of 1</p>
           <button>Next ></button>
       </div>
-    </div>
+    </div> -->
 
   </body>
 </html>

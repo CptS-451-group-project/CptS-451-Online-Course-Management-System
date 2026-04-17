@@ -9,19 +9,13 @@ router.get('/', async (req, res) => {
         const query = `
             SELECT 
                 ct.course_term_id,
+                ct.professor_id,
                 cd.course_name,
                 cd.description,
-                ct.term,
-                ct.start_date,
-                ct.end_date,
-                ct.location,
-                ct.class_times,
                 ct.availability,
-                ct.max_students,
-                u.email as professor_email
-            FROM Course_Terms ct
-            JOIN Course_Details cd ON ct.course_id = cd.course_id
-            LEFT JOIN Users u ON ct.professor_id = u.user_id
+                ct.max_students
+            FROM course_terms ct
+            JOIN course_details cd ON ct.course_id = cd.course_id
             ORDER BY cd.course_name ASC;
         `;
         const result = await pool.query(query);
@@ -35,7 +29,7 @@ router.get('/', async (req, res) => {
 // @route   POST /api/courses
 // @desc    Create a new course and term (simplified for MVP CRUD)
 router.post('/', async (req, res) => {
-    const { course_name, description, term, professor_id, start_date, end_date, location, class_times, max_students } = req.body;
+    const { course_name, description, professor_id, location, class_times, max_students } = req.body;
     
     try {
         // Start a transaction since we insert into two tables
@@ -58,10 +52,10 @@ router.post('/', async (req, res) => {
         // 2. Insert Course Term
         const newTerm = await pool.query(
             `INSERT INTO Course_Terms 
-            (course_id, term, professor_id, start_date, end_date, location, class_times, max_students) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+            (course_id, professor_id, location, max_students) 
+            VALUES ($1, $2, $3, $4) 
             RETURNING *`,
-            [courseId, term, professor_id, start_date, end_date, location, class_times, max_students]
+            [courseId, professor_id, location, max_students]
         );
 
         await pool.query('COMMIT');
