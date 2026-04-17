@@ -41,8 +41,8 @@
 2.  **API/Backend:** key endpoints needed:
     *   `GET /courses` (US-001)
     *   `POST /enroll` (US-002)
-    *   `GET /admin/enrollments?status=pending` (US-003)
-    *   `PUT /admin/enrollments/:id` (US-004)
+    *   `GET /frontend/admin/enrollments?status=pending` (US-003)
+    *   `PUT /frontend/admin/enrollments/:id` (US-004)
 3.  **Frontend:**
     *   Student Dashboard (List of courses).
     *   Admin Dashboard (List of pending requests).

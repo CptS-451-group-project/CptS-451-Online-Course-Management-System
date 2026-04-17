@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Course Management System - Professor View</title>
+
+    <link rel="stylesheet" href="/assets/style.css">
+    <script src="/assets/js/admin.js"></script>
+  </head>
+  <body>
+    <div class="header">
+        <Button>Menu</Button>
+        <h3>Course Management System</h3>
+        <div class="userinfo">
+            <p><Strong id="userName">Dr. John AP</Strong></p>
+            <p id="userId">12345678</p>
+        </div>
+    </div>
+    <div class="body">
+      <div class="searchBox">
+            <input placeholder="Search"></input>
+            <Button>Filters</Button>
+            <Button>Sort By</Button>
+      </div>
+            <div class="searchBox">
+            <input placeholder="Search"></input>
+            <Button>Filters</Button>
+            <Button>Sort By</Button>
+      </div>
+      <div class="coursesBox">
+            <h2>All Courses</h2>
+            <button onclick="window.location.href='/admin/course-edit.html'">+ Add New Course</button>
+            <table id="coursesTable">
+              <tr>
+                <th>Name</th>
+                <th>Course Term ID</th>
+                <th>Times</th>
+                <th>Availability</th>
+                <th>Actions</th> <!-- NEW -->
+              </tr>
+            </table> <!-- Removed hardcoded rows here to let JS populate -->
+            <div class="footer">
+                <button>< Prev</button>
+                <p id="courseTablePages">1 of 1</p>
+                <button>Next ></button>
+            </div>
+      </div>
+      <div class="coursesBox">
+            <h2>All Students / Users</h2>
+            <button onclick="window.location.href='/admin/student-edit.html'">+ Add New Student</button>
+              <table id="studentsTable">
+                <tr>
+                  <th>Student ID</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Actions</th> <!-- NEW -->
+                </tr>
+              </table> <!-- Removed hardcoded rows here to let JS populate -->
+              <div class="footer">
+                <button>< Prev</button>
+                  <p id="courseTablePages">1 of 1</p>
+                <button>Next ></button>
+              </div>
+      </div>
+    </div>
+     <!--
+    <h2>All Enrollments</h2>
+    <div class="coursesBox">  
+      </div>
+        <div class="searchBox">
+        <input placeholder="Search"></input>
+        <Button>Filters</Button>
+        <Button>Sort By</Button>
+      </div>
+
+      <table id="enrollmentsTable">
+                <tr>
+                  <th>Course Name</th>
+                  <th>Student Email</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+      </table> 
+      <div class="footer">
+          <button>< Prev</button>
+              <p id="courseTablePages">1 of 1</p>
+          <button>Next ></button>
+      </div>
+    </div> -->
+
+  </body>
+</html>

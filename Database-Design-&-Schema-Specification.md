@@ -93,7 +93,7 @@
 | course_term_id | INT | PRIMARY KEY AUTO_INCREMENT | Unique identifier for the course term |
 | course_id | INT | FK REFERENCES Course_Details.course_id | The unique course identifier |
 | term | VARCHAR(64) | NOT NULL | What term(semester / quarter) this course is taking place |
-| professor_id | INT | FK REFERENCES user_id in Users NOT NULL ON DELETE NULL | Professor identification number |
+| professor_id | INT | FK REFERENCES user_id in Users ON DELETE NULL | Professor identification number |
 | start_date | DATE | NOT NULL | Course begin date |
 | end_date | DATE | NOT NULL CHECK end_date > start_date | Course end date |
 | location | VARCHAR(64) | NOT NULL | Where the course is being held |
@@ -180,13 +180,13 @@ CREATE TABLE Course_Terms
     professor_id INT,  
     start_date DATE NOT NULL,  
     end_date DATE NOT NULL,   
-    CHECK end_date > start_date,   
+    CHECK (end_date > start_date),   
     location VARCHAR(64) NOT NULL,  
     class_times VARCHAR(64) NOT NULL,  
     availability BOOLEAN NOT NULL,  
     max_students INT,  
     FOREIGN KEY (course_id) REFERENCES Course_Details(course_id),  
-    FOREIGN KEY (professor_id) REFERENCES Users(user_id) ON DELETE RESTRICT  
+    FOREIGN KEY (professor_id) REFERENCES Users(user_id) ON DELETE SET NULL  
 );
 
 ### **4.2 Enrollment status table**
@@ -196,8 +196,10 @@ CREATE TABLE Enrollment_Status
     course_term_id INT NOT NULL,  
     user_id INT NOT NULL,  
     status VARCHAR(1) NOT NULL DEFAULT 'p',  
+    timestamp TIMESTAMP NOT NULL,  
     FOREIGN KEY (course_term_id) REFERENCES Course_Terms(course_term_id),  
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE  
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE RESTRICT,  
+    PRIMARY KEY (course_term_id, user_id)  
 );
 
 ### **4.3 Users table**
