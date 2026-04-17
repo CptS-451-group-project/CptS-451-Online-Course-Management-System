@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # [Online Course Management System]
 > Our project is a Online Course Management System that will modernize student enrollment and faculty administration.
 
