@@ -3,7 +3,7 @@ window.addEventListener("load", () => {
   // Element Objects of all the fields and buttons in the html
   const studentIdFld   = document.getElementById("studentId");
   const courseIdFld    = document.getElementById("courseId");
-  const createBtn = document.getElementById("create");
+  const createBtn      = document.getElementById("create");
 
   // Rest of code here
   createBtn.addEventListener("click", async (e) => {
@@ -15,13 +15,12 @@ window.addEventListener("load", () => {
     }
 
     const payload = {
-      email: studentEmailFld.value, // "Name" acts as email since auth needs email
-      password: newPasswordFld.value,
-      role_name: "Student" // default role for this form
+      course_term_id: courseIdFld.value,
+      user_id: studentIdFld.value,
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch('http://localhost:5000/api/enroll', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
