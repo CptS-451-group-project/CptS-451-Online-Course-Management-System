@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS Logs (
 -- FOR EACH ROW
 -- EXECUTE FUNCTION check_course_capacity();
 
--- FOR TESTING: inserting dummy data
+-- ********************************** FOR TESTING: inserting dummy data ***********************************
 
 -- 1. Create a dummy Course Detail
 INSERT INTO Course_Details (course_name, description) 
@@ -197,7 +197,8 @@ SELECT
 FROM Users WHERE email IN ('david@wsu.edu', 'nick@wsu.edu', 'panashe@wsu.edu','davidtrann@wsu.edu')
 ON CONFLICT DO NOTHING;
 
--- 4.1 Enroll pending (tests advanced query 3)
+-- 4.1 Enroll pending (tests advanced query #3)
+-- this enrollment is marked as Pending 'p' so it get's added to queue which changes enrolments table
 INSERT INTO Enrollment_Status (course_term_id, user_id, status, timestamp)
 SELECT 
     (SELECT course_term_id FROM Course_Terms ct JOIN Course_Details cd ON ct.course_id = cd.course_id WHERE cd.course_name = 'CPTS 451 - Introduction to Databases' ORDER BY course_term_id DESC LIMIT 1),
@@ -208,7 +209,7 @@ FROM Users WHERE email IN ('PK@wsu.edu')
 ON CONFLICT DO NOTHING;
 
 
--- 4.2 enroll student to course (tests advanced query 2)
+-- 4.2 enroll student to course (tests advanced query #2)
 INSERT INTO Enrollment_Status (course_term_id, user_id, status, timestamp)
 SELECT 
     (SELECT course_term_id FROM Course_Terms ct JOIN Course_Details cd ON ct.course_id = cd.course_id WHERE cd.course_name = 'CPTS 360 - Systems Programming' ORDER BY course_term_id DESC LIMIT 1),

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
+// For advanced query #2 - overloaded student
 // @route   GET /api/users/overloaded
 // @desc    Fetch overloaded students
 router.get('/overloaded', async (req, res) => {

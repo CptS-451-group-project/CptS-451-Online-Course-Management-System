@@ -56,6 +56,12 @@ td {
   text-align: center;
 }
 
+/* Make the second item (All Courses box) span across 2 rows */
+.body > div:nth-child(2) {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+}
+
 .login {
   display: grid;
 
@@ -84,6 +90,8 @@ td {
 {
   flex-direction: row;
   text-align: left;
+  height: fit-content;
+  align-self: start;
 }
 
 .selected {

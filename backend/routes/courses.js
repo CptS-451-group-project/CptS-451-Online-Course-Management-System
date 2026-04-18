@@ -2,42 +2,9 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
-// FIX this
-// @route   GET /api/courses/overloaded
-// @desc    Fetch overloaded students (based on 'having count()' value set)
-// router.get('/overloaded', async (req, res) => {
-//     try {
-//         const query = `
-//             SELECT 
-//                 u.user_id,
-//                 u.email, 
-//                 u.role_name,
-//                 t.term_name, 
-//                 COUNT(es.course_term_id) AS total_enrolled_classes
-//             FROM Users u
-//             JOIN Enrollment_Status es ON u.user_id = es.user_id
-//             JOIN Course_Terms ct ON es.course_term_id = ct.course_term_id
-//             JOIN Terms t ON ct.term_id = t.term_id
-//             WHERE u.role_name = 'Student' 
-//               AND es.status = 'e'
-//             GROUP BY 
-//                 u.user_id, 
-//                 u.email, 
-//                 u.role_name,
-//                 t.term_name
-//             HAVING COUNT(es.course_term_id) > 1
-//             ORDER BY total_enrolled_classes DESC;
-//         `;
-//         const result = await pool.query(query);
-//         res.json(result.rows);
-//     } catch (err) {
-//         console.error(err.message);
-//         res.status(500).json({ error: "Server error fetching overloaded students" });
-//     }
-// });
 
 
-// NEW
+// For advanced query #1 - high demand courses
 // @route   GET /api/courses/high-demand
 // @desc    Fetch high-demand / near-capacity courses
 router.get('/high-demand', async (req, res) => {
@@ -71,6 +38,36 @@ router.get('/high-demand', async (req, res) => {
     }
 });
 
+// For advanced Query #4 - enrollment totals
+// @route   GET /api/courses/enrollment-totals
+// @desc    Fetch total enrollments grouped by each course
+router.get('/enrollment-totals', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                cd.course_name, 
+                t.term_name, 
+                ct.max_students,
+                COUNT(es.user_id) AS total_enrolled
+            FROM Course_Details cd
+            JOIN Course_Terms ct ON cd.course_id = ct.course_id
+            JOIN Terms t ON ct.term_id = t.term_id
+            -- LEFT JOIN ensures courses with 0 enrollments still appear in the report
+            LEFT JOIN Enrollment_Status es 
+                ON ct.course_term_id = es.course_term_id AND es.status = 'e'
+            GROUP BY 
+                cd.course_name, 
+                t.term_name,
+                ct.max_students
+            ORDER BY total_enrolled DESC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error fetching enrollment totals" });
+    }
+});
 
 // @route   GET /api/courses
 // @desc    Get all courses with their terms and professors

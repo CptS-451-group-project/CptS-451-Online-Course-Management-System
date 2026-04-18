@@ -47,51 +47,77 @@ window.addEventListener("load", () => {
   };
 
   // --- DATA LOADERS ---
+
+  // used to retrieve data inside the 'All Courses' table
+  // selects an endpoint from the backend from (backend/routes/courses.js)
   const loadCourses = async (filter = 'all') => {
     console.log("ran");
     try {
-      const endpoint = filter === 'high-demand' 
-          ? 'http://localhost:5000/api/courses/high-demand' 
-          : 'http://localhost:5000/api/courses';
+      let endpoint = 'http://localhost:5000/api/courses';
+      if (filter === 'high-demand') endpoint = 'http://localhost:5000/api/courses/high-demand';
+      else if (filter === 'enrollment-totals') endpoint = 'http://localhost:5000/api/courses/enrollment-totals';
           
       const response = await fetch(endpoint);
       if (!response.ok) throw new Error("Failed to load courses");
       const courses = await response.json();
       
-      coursesTable.innerHTML = `
-        <tr>
-          <th>Name</th>
-          <th>Course Term ID</th>
-          <th>Professor ID</th>
-          <th>Availability</th>
-          <th>Actions</th>
-        </tr>
-      `;
-      console.log(courses);
+      if (filter === 'enrollment-totals') {
+          coursesTable.innerHTML = `
+            <tr>
+              <th>Course Name</th>
+              <th>Term</th>
+              <th>Total Enrolled</th>
+              <th>Capacity</th>
+            </tr>
+          `;
+          courses.forEach(course => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${course.course_name}</td>
+              <td>${course.term_name}</td>
+              <td><strong>${course.total_enrolled}</strong> Students</td>
+              <td>${course.max_students ? course.max_students : 'Unlimited'}</td>
+            `;
+            coursesTable.appendChild(row);
+          });
+      } else {
+          coursesTable.innerHTML = `
+            <tr>
+              <th>Name</th>
+              <th>Course Term ID</th>
+              <th>Professor ID</th>
+              <th>Availability</th>
+              <th>Actions</th>
+            </tr>
+          `;
+          console.log(courses);
 
-      courses.forEach(course => {
-        const row = document.createElement("tr");
-        
-        const capacityBadge = filter === 'high-demand' 
-            ? ` (${course.currently_enrolled}/${course.max_students} Full)` 
-            : '';
+          courses.forEach(course => {
+            const row = document.createElement("tr");
             
-        row.innerHTML = `
-          <td>${course.course_name}${capacityBadge}</td>
-          <td>${course.course_term_id}</td>
-          <td>${course.professor_id}</td>
-          <td>${course.availability ? 'Open' : 'Closed'}</td>
-          <td>
-            <button onclick="window.location.href='/admin/course-edit.html?courseId=${course.course_term_id}'">Edit</button>
-            <button onclick="deleteCourse(${course.course_term_id})">Remove</button>
-          </td>
-        `;
-        coursesTable.appendChild(row);
-        console.log("ran");
-      });
+            const capacityBadge = filter === 'high-demand' 
+                ? ` (${course.currently_enrolled}/${course.max_students} Full)` 
+                : '';
+                
+            row.innerHTML = `
+              <td>${course.course_name}${capacityBadge}</td>
+              <td>${course.course_term_id}</td>
+              <td>${course.professor_id}</td>
+              <td>${course.availability ? 'Open' : 'Closed'}</td>
+              <td>
+                <button onclick="window.location.href='/admin/course-edit.html?courseId=${course.course_term_id}'">Edit</button>
+                <button onclick="deleteCourse(${course.course_term_id})">Remove</button>
+              </td>
+            `;
+            coursesTable.appendChild(row);
+            console.log("ran");
+          });
+      }
     } catch (err) { console.error(err); }
   };
 
+  // used to retrieve data inside the 'All Students / User' table
+  // selects an endpoint from the backend from (backend/routes/users.js)
   const loadStudents = async (filter = 'all') => {
     try {
       const endpoint = filter === 'overloaded'
@@ -137,11 +163,14 @@ window.addEventListener("load", () => {
     } catch (err) { console.error(err); }
   };
 
+
+  // used to retrieve data inside the 'All Courses' table
+  // selects an endpoint from the backend from (backend/routes/enrollments.js)
   const loadEnrollments = async (filter = 'all') => {
     try {
-      const endpoint = filter === 'pending-queue'
-          ? 'http://localhost:5000/api/enroll/pending-queue'
-          : 'http://localhost:5000/api/enroll';
+      let endpoint = 'http://localhost:5000/api/enroll';
+      if (filter === 'pending-queue') endpoint = 'http://localhost:5000/api/enroll/pending-queue';
+      else if (filter === 'enrollments-by-term') endpoint = 'http://localhost:5000/api/enroll/by-term';
           
       const response = await fetch(endpoint);
       const enrollments = await response.json();
@@ -163,6 +192,30 @@ window.addEventListener("load", () => {
               <td><span style="color:red;">${enroll.pending_requests_count} Students Waiting</span></td>
               <td>
                 <button onclick="alert('Redirect to review enrollments for course ID: ${enroll.course_term_id}')">Review</button>
+              </td>
+            `;
+            enrollmentsTable.appendChild(row);
+          });
+      } else if (filter === 'enrollments-by-term') {
+          enrollmentsTable.innerHTML = `
+            <tr>
+              <th>Term</th>
+              <th>Course Name</th>
+              <th>Student Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          `;
+          enrollments.forEach(enroll => {
+            const row = document.createElement("tr");
+            const statusMap = { p: 'Pending', e: 'Enrolled', w: 'Waitlist'};
+            row.innerHTML = `
+              <td><strong>${enroll.term_name}</strong></td>
+              <td>${enroll.course_name}</td>
+              <td>${enroll.student_email}</td>
+              <td>${statusMap[enroll.status] || enroll.status}</td>
+              <td>
+                <button onclick="deleteEnrollment(${enroll.course_term_id}, ${enroll.user_id})">Remove</button>
               </td>
             `;
             enrollmentsTable.appendChild(row);
@@ -209,6 +262,14 @@ window.addEventListener("load", () => {
           loadCourses('all');
           loadStudents('all');
           loadEnrollments('pending-queue');
+      } else if (val === 'enrollment-totals') {
+          loadCourses('enrollment-totals');
+          loadStudents('all');
+          loadEnrollments('all');
+      } else if (val === 'enrollments-by-term') {
+          loadCourses('all');
+          loadStudents('all');
+          loadEnrollments('enrollments-by-term');
       } else {
           loadCourses('all');
           loadStudents('all');
