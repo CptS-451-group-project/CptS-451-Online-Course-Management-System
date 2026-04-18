@@ -2,6 +2,35 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
+// @route   GET /api/enroll/pending-queue
+// @desc    Fetch pending enrollments queue
+router.get('/pending-queue', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                ct.course_term_id,
+                cd.course_name, 
+                t.term_name, 
+                COUNT(es.user_id) AS pending_requests_count
+            FROM Course_Details cd
+            JOIN Course_Terms ct ON cd.course_id = ct.course_id
+            JOIN Terms t ON ct.term_id = t.term_id
+            JOIN Enrollment_Status es ON ct.course_term_id = es.course_term_id
+            WHERE es.status = 'p'
+            GROUP BY 
+                ct.course_term_id,
+                cd.course_name, 
+                t.term_name
+            ORDER BY pending_requests_count DESC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error fetching pending queue" });
+    }
+});
+
 // @route   POST /api/enroll
 // @desc    A student enrolls in a course
 router.post('/', async (req, res) => {

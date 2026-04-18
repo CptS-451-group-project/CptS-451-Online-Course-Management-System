@@ -73,7 +73,7 @@ window.addEventListener("load", () => {
         const row = document.createElement("tr");
         
         const capacityBadge = filter === 'high-demand' 
-            ? ` (${course.currently_enrolled}/${course.max_students} enrolled)` 
+            ? ` (${course.currently_enrolled}/${course.max_students} Full)` 
             : '';
             
         row.innerHTML = `
@@ -137,33 +137,59 @@ window.addEventListener("load", () => {
     } catch (err) { console.error(err); }
   };
 
-  const loadEnrollments = async () => {
+  const loadEnrollments = async (filter = 'all') => {
     try {
-      const response = await fetch('http://localhost:5000/api/enroll');
+      const endpoint = filter === 'pending-queue'
+          ? 'http://localhost:5000/api/enroll/pending-queue'
+          : 'http://localhost:5000/api/enroll';
+          
+      const response = await fetch(endpoint);
       const enrollments = await response.json();
       
-      enrollmentsTable.innerHTML = `
-        <tr>
-          <th>Course Name</th>
-          <th>Student Email</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      `;
-
-      enrollments.forEach(enroll => {
-        const row = document.createElement("tr");
-        const statusMap = { p: 'Pending', e: 'Enrolled', w: 'Waitlist'};
-        row.innerHTML = `
-          <td>${enroll.course_name}</td>
-          <td>${enroll.student_email}</td>
-          <td>${statusMap[enroll.status] || enroll.status}</td>
-          <td>
-            <button onclick="deleteEnrollment(${enroll.course_term_id}, ${enroll.user_id})">Remove</button>
-          </td>
-        `;
-        enrollmentsTable.appendChild(row);
-      });
+      if (filter === 'pending-queue') {
+          enrollmentsTable.innerHTML = `
+            <tr>
+              <th>Course Name</th>
+              <th>Term</th>
+              <th>Pending Requests</th>
+              <th>Actions</th>
+            </tr>
+          `;
+          enrollments.forEach(enroll => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${enroll.course_name}</td>
+              <td>${enroll.term_name}</td>
+              <td><span style="color:red;">${enroll.pending_requests_count} Students Waiting</span></td>
+              <td>
+                <button onclick="alert('Redirect to review enrollments for course ID: ${enroll.course_term_id}')">Review</button>
+              </td>
+            `;
+            enrollmentsTable.appendChild(row);
+          });
+      } else {
+          enrollmentsTable.innerHTML = `
+            <tr>
+              <th>Course Name</th>
+              <th>Student Email</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          `;
+          enrollments.forEach(enroll => {
+            const row = document.createElement("tr");
+            const statusMap = { p: 'Pending', e: 'Enrolled', w: 'Waitlist'};
+            row.innerHTML = `
+              <td>${enroll.course_name}</td>
+              <td>${enroll.student_email}</td>
+              <td>${statusMap[enroll.status] || enroll.status}</td>
+              <td>
+                <button onclick="deleteEnrollment(${enroll.course_term_id}, ${enroll.user_id})">Remove</button>
+              </td>
+            `;
+            enrollmentsTable.appendChild(row);
+          });
+      }
     } catch (err) { console.error(err); }
   };
 
@@ -174,12 +200,19 @@ window.addEventListener("load", () => {
       if (val === 'high-demand') {
           loadCourses('high-demand');
           loadStudents('all');
+          loadEnrollments('all');
       } else if (val === 'overloaded') {
           loadCourses('all');
           loadStudents('overloaded');
+          loadEnrollments('all');
+      } else if (val === 'pending-queue') {
+          loadCourses('all');
+          loadStudents('all');
+          loadEnrollments('pending-queue');
       } else {
           loadCourses('all');
           loadStudents('all');
+          loadEnrollments('all');
       }
     });
   }

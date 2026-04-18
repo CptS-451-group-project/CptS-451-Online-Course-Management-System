@@ -183,7 +183,8 @@ INSERT INTO Users (email, password_hash, role_name) VALUES
 ('nick@wsu.edu', 'hash_pw', 'Student'),
 ('panashe@wsu.edu', 'hash_pw', 'Student'),
 ('jaden@wsu.edu', 'hash_pw', 'Student'),
-('PK@wsu.edu', 'hash_pw', 'Student')
+('PK@wsu.edu', 'hash_pw', 'Student'),
+('davidtrann@wsu.edu', 'hash_pw', 'Student')
 ON CONFLICT (email) DO NOTHING;
 
 -- 4. Enroll all 5 students in the class so it hits 100% capacity (which is >= 90%)
@@ -193,10 +194,21 @@ SELECT
     user_id,
     'e',
     CURRENT_TIMESTAMP
-FROM Users WHERE email IN ('david@wsu.edu', 'nick@wsu.edu', 'panashe@wsu.edu', 'jaden@wsu.edu')
+FROM Users WHERE email IN ('david@wsu.edu', 'nick@wsu.edu', 'panashe@wsu.edu','davidtrann@wsu.edu')
 ON CONFLICT DO NOTHING;
 
--- 4.2 enroll student to course
+-- 4.1 Enroll pending (tests advanced query 3)
+INSERT INTO Enrollment_Status (course_term_id, user_id, status, timestamp)
+SELECT 
+    (SELECT course_term_id FROM Course_Terms ct JOIN Course_Details cd ON ct.course_id = cd.course_id WHERE cd.course_name = 'CPTS 451 - Introduction to Databases' ORDER BY course_term_id DESC LIMIT 1),
+    user_id,
+    'p',
+    CURRENT_TIMESTAMP
+FROM Users WHERE email IN ('PK@wsu.edu')
+ON CONFLICT DO NOTHING;
+
+
+-- 4.2 enroll student to course (tests advanced query 2)
 INSERT INTO Enrollment_Status (course_term_id, user_id, status, timestamp)
 SELECT 
     (SELECT course_term_id FROM Course_Terms ct JOIN Course_Details cd ON ct.course_id = cd.course_id WHERE cd.course_name = 'CPTS 360 - Systems Programming' ORDER BY course_term_id DESC LIMIT 1),
