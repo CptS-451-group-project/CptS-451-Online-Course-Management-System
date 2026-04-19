@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+const { sendPgError } = require('../utils/pgErrors'); // RESTRICT from Logs / Enrollment blocks delete
+
 
 // For advanced query #2 - overloaded student
 // @route   GET /api/users/overloaded
@@ -65,8 +67,12 @@ router.delete('/:id', async (req, res) => {
         }
         res.json({ message: "User deleted successfully!" });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: "Failed to delete user." });
+        // User still referenced by Enrollment_Status or Logs → Postgres 23503
+        sendPgError(res, err, {
+            fkMessage:
+                'Cannot delete user: related enrollments or logs still reference this account.',
+            defaultMessage: 'Failed to delete user.',
+        });
     }
 });
 

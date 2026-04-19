@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+// Central place for duplicate enroll, FK bad ids, capacity trigger text → alert-friendly JSON
+const { sendPgError } = require('../utils/pgErrors');
 
 // For advanced query #3 - pending enrollments queue
 // @route   GET /api/enroll/pending-queue
@@ -75,13 +77,12 @@ router.post('/', async (req, res) => {
         const result = await pool.query(query, [course_term_id, user_id]);
         res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
-        // Error handling edge cases (e.g. duplicate enrollment violates UNIQUE PK constraint)
-        if (err.code === '23505') { // Postgres code for unique violation
-            res.status(400).json({ error: "You are already enrolled or pending in this course." });
-        } else {
-            res.status(500).json({ error: "Failed to process enrollment." });
-        }
+        // 23505 = duplicate PK; 23503 = bad FK; trigger may fire on status change elsewhere
+        sendPgError(res, err, {
+            duplicateMessage: 'You are already enrolled or pending in this course.',
+            fkMessage: 'Invalid course or user (check course_term_id and user_id).',
+            defaultMessage: 'Failed to process enrollment.',
+        });
     }
 });
 
@@ -151,9 +152,12 @@ router.put('/:course_term_id/:user_id', async (req, res) => {
 
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err.message);
-        // E.g. violated the CHECK(status IN ('p','e','w')) constraint we added in the db
-        res.status(400).json({ error: "Failed to update enrollment status." });
+        // Class full → trigger RAISE; CHECK on status; capacity lock inside DB
+        sendPgError(res, err, {
+            defaultStatus: 400,
+            defaultMessage: 'Failed to update enrollment status.',
+            checkMessage: 'Invalid enrollment status for database rules.',
+        });
     }
 });
 
@@ -171,9 +175,10 @@ router.delete('/:course_term_id/:user_id', async (req, res) => {
         }
         res.json({ message: "Enrollment removed successfully!" });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: "Failed to delete enrollment." });
+        // Unusual here; plain DELETE rarely raises unless FK setup changes
+        sendPgError(res, err, { defaultMessage: 'Failed to delete enrollment.' });
     }
+
 });
 
 module.exports = router;
