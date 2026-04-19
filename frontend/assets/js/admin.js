@@ -134,7 +134,7 @@ window.addEventListener("load", () => {
           <td>${enroll.student_email}</td>
           <td>${statusMap[enroll.status] || enroll.status}</td>
           <td>
-            <button onclick="deleteEnrollment(${enroll.course_term_id}, ${enroll.user_id})">Remove</button>
+            <button onclick="deleteEnrollment(${enroll.course_term_id}, ${enroll.user_id})">Unenroll</button>
           </td>
         `;
         enrollmentsTable.appendChild(row);
