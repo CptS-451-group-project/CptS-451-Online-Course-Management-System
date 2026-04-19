@@ -2,6 +2,65 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
+// For advanced query #3 - pending enrollments queue
+// @route   GET /api/enroll/pending-queue
+// @desc    Fetch pending enrollments queue
+router.get('/pending-queue', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                ct.course_term_id,
+                cd.course_name, 
+                t.term_name, 
+                COUNT(es.user_id) AS pending_requests_count
+            FROM Course_Details cd
+            JOIN Course_Terms ct ON cd.course_id = ct.course_id
+            JOIN Terms t ON ct.term_id = t.term_id
+            JOIN Enrollment_Status es ON ct.course_term_id = es.course_term_id
+            WHERE es.status = 'p'
+            GROUP BY 
+                ct.course_term_id,
+                cd.course_name, 
+                t.term_name
+            ORDER BY pending_requests_count DESC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error fetching pending queue" });
+    }
+});
+
+// For advanced query #5 - enrollments by term
+// @route   GET /api/enroll/by-term
+// @desc    Fetch all enrollments organized by class term
+router.get('/by-term', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                es.status, 
+                es.timestamp, 
+                es.course_term_id, 
+                es.user_id, 
+                u.email as student_email, 
+                cd.course_name,
+                t.term_name
+            FROM Enrollment_Status es
+            JOIN Users u ON es.user_id = u.user_id
+            JOIN Course_Terms ct ON es.course_term_id = ct.course_term_id
+            JOIN Course_Details cd ON ct.course_id = cd.course_id
+            JOIN Terms t ON ct.term_id = t.term_id
+            ORDER BY t.start_date DESC, cd.course_name ASC, u.email ASC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error getting enrollments by term." });
+    }
+});
+
 // @route   POST /api/enroll
 // @desc    A student enrolls in a course
 router.post('/', async (req, res) => {

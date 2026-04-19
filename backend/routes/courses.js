@@ -2,6 +2,73 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../db');
 
+
+
+// For advanced query #1 - high demand courses
+// @route   GET /api/courses/high-demand
+// @desc    Fetch high-demand / near-capacity courses
+router.get('/high-demand', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                cd.course_name, 
+                ct.course_term_id,
+                ct.professor_id,
+                ct.availability,
+                ct.max_students, 
+                COUNT(es.user_id) AS currently_enrolled
+            FROM Course_Details cd
+            JOIN Course_Terms ct ON cd.course_id = ct.course_id
+            LEFT JOIN Enrollment_Status es 
+                ON ct.course_term_id = es.course_term_id AND es.status = 'e'
+            GROUP BY 
+                cd.course_name, 
+                ct.course_term_id,
+                ct.professor_id,
+                ct.availability,
+                ct.max_students
+            HAVING COUNT(es.user_id) >= (ct.max_students * 0.7)
+            ORDER BY currently_enrolled DESC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error fetching high-demand courses" });
+    }
+});
+
+// For advanced Query #4 - enrollment totals
+// @route   GET /api/courses/enrollment-totals
+// @desc    Fetch total enrollments grouped by each course
+router.get('/enrollment-totals', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                cd.course_name, 
+                t.term_name, 
+                ct.max_students,
+                COUNT(es.user_id) AS total_enrolled
+            FROM Course_Details cd
+            JOIN Course_Terms ct ON cd.course_id = ct.course_id
+            JOIN Terms t ON ct.term_id = t.term_id
+            -- LEFT JOIN ensures courses with 0 enrollments still appear in the report
+            LEFT JOIN Enrollment_Status es 
+                ON ct.course_term_id = es.course_term_id AND es.status = 'e'
+            GROUP BY 
+                cd.course_name, 
+                t.term_name,
+                ct.max_students
+            ORDER BY total_enrolled DESC;
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error fetching enrollment totals" });
+    }
+});
+
 // @route   GET /api/courses
 // @desc    Get all courses with their terms and professors
 router.get('/', async (req, res) => {
@@ -25,6 +92,8 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: "Server error retrieving courses." });
     }
 });
+
+
 
 // @route   POST /api/courses
 // @desc    Create a new course and term (simplified for MVP CRUD)
