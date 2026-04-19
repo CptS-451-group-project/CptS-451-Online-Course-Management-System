@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../db');
+const { sendPgError } = require('../utils/pgErrors'); // constraint failures from inserts/deletes
+
 
 // @route   GET /api/courses
 // @desc    Get all courses with their terms and professors
@@ -61,10 +63,14 @@ router.post('/', async (req, res) => {
         await pool.query('COMMIT');
         res.status(201).json(newTerm.rows[0]);
     } catch (err) {
-        await pool.query('ROLLBACK');
-        console.error(err.message);
-        // Error handling edge cases (e.g. invalid dates violated CHECK constraint)
-        res.status(400).json({ error: "Failed to create course. Please check your data constraints." });
+        // Undo partial inserts if Course_Details or Course_Terms failed
+        await pool.query('ROLLBACK').catch(() => {});
+        sendPgError(res, err, {
+            defaultStatus: 400,
+            defaultMessage: 'Could not create course.',
+            duplicateMessage: 'A course with this name already exists.',
+            fkMessage: 'Invalid professor or related data.',
+        });
     }
 });
 
@@ -80,8 +86,11 @@ router.delete('/:id', async (req, res) => {
         }
         res.json({ message: "Course deleted successfully!" });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).json({ error: "Failed to delete course." });
+        // Rare: FK block if something still references this course_term row
+        sendPgError(res, err, {
+            fkMessage: 'Cannot delete this offering: enrollments or schedules still reference it.',
+            defaultMessage: 'Failed to delete course.',
+        });
     }
 });
 
