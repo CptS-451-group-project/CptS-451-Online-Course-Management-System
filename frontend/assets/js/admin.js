@@ -72,7 +72,7 @@ window.addEventListener("load", () => {
           <td>${course.professor_id}</td>
           <td>${course.availability ? 'Open' : 'Closed'}</td>
           <td>
-            <button onclick="window.location.href='/admin/course-edit.html?courseId=${course.course_term_id}'">Edit</button>
+            <button onclick="window.location.href='/frontend/admin/course-edit.html?courseId=${course.course_term_id}'">Edit</button>
             <button onclick="deleteCourse(${course.course_term_id})">Remove</button>
           </td>
         `;
@@ -103,7 +103,7 @@ window.addEventListener("load", () => {
           <td>${user.email}</td>
           <td>${user.role_name}</td>
           <td>
-            <button onclick="window.location.href='http://localhost:5000/admin/student-edit.html?studentId=${user.user_id}'">Edit</button>
+            <button onclick="window.location.href='http://localhost:5000/frontend/admin/student-edit.html?studentId=${user.user_id}'">Edit</button>
             <button onclick="deleteUser(${user.user_id})">Remove</button>
           </td>
         `;
