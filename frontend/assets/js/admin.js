@@ -153,7 +153,7 @@ window.addEventListener("load", () => {
           <td>${user.role_name}</td>
           ${extraCols}
           <td>
-            <button onclick="window.location.href='http://localhost:5000/frontend/admin/student-edit.html?studentId=${user.user_id}'">Edit</button>
+            <button onclick="window.location.href='http://localhost:5000/admin/student-edit.html?studentId=${user.user_id}'">Edit</button>
             <button onclick="deleteUser(${user.user_id})">Remove</button>
           </td>
         `;
