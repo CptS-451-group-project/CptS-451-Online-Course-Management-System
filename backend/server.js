@@ -20,6 +20,7 @@ const path = require('path');
 // Serve static files from the frontend directory
 app.use(express.static(path.join(__dirname, '../frontend')));
 
+
 // Health check route for Render to know your server is up
 app.get('/health', async (req, res) => {
     try {

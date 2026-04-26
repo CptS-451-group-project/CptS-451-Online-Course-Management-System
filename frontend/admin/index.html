@@ -18,12 +18,16 @@
     <div class="body">
       <div class="searchBox">
             <input placeholder="Search"></input>
-            <Button>Filters</Button>
-            <Button>Sort By</Button>
-      </div>
-            <div class="searchBox">
-            <input placeholder="Search"></input>
-            <Button>Filters</Button>
+            <!-- New added filter dropdown feature -->
+             <!-- When user clicks filter button it will show the optional dropdowns to select-->
+            <select id="courseFilterDropdown">
+              <option value="all">Filter</option>
+              <option value="high-demand">High Demand / Near-Capacity</option>
+              <option value="overloaded">Reaching max enrollment</option>
+              <option value="pending-queue">Pending Enrollments Queue</option>
+              <option value="enrollment-totals">Enrollment Totals for each course</option>
+              <option value="enrollments-by-term">Enrollments by Class Term</option>
+            </select>
             <Button>Sort By</Button>
       </div>
       <div class="coursesBox">
@@ -80,7 +84,7 @@
                 </tr>
       </table> 
       <div class="footer">
-          <button>< Prev</button>
+          <button> Prev></button>
               <p id="courseTablePages">1 of 1</p>
           <button>Next ></button>
       </div>
