@@ -1,29 +1,72 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Edit Course</title>
+    <title>Edit/Create Course</title>
     <script src="/assets/js/course-edit.js"></script>
     <link rel="stylesheet" href="/assets/style.css">
+    <style>
+      /* Quick styling to visually separate the panels */
+      fieldset { margin-bottom: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 5px; }
+      legend { font-weight: bold; padding: 0 5px; }
+    </style>
   </head>
   <body>
     <button onclick="window.location.href='/admin/index.html'">< Back to Dashboard</button>
-    <div class="login">
-      <h2>Edit / Create Course</h2>
-      <form>
-        <label for="courseId">Course ID:</label><br>
-        <input type="text" id="courseId" name="courseId"><br>
-        <label for="courseName">Course Name:</label><br>
-        <input type="text" id="courseName" name="courseName"><br>
-        <label for="courseTime">Course Time:</label><br>
-        <input type="text" id="courseTime" name="courseTime"><br>
-        <label for="location">Location:</label><br>
-        <input type="text" id="location" name="location"><br>
-        <label for="profId">Professor ID:</label><br>
-        <input type="text" id="profId" name="profId"><br>
-        <label for="description">Description:</label><br>
-        <input type="text" id="description" name="description"><br>
+    <div class="login" style="width: 70%; display: block;"> <h2>Create Course & Term</h2>
+      <form id="courseForm">
+        
+        <fieldset>
+          <legend>1. General Course Details</legend>
+          <label for="courseName">Course Name:</label>
+          <input type="text" id="courseName" placeholder="e.g., CPTS 451"><br>
+          <label for="description">Description:</label>
+          <input type="text" id="description" placeholder="Course description..."><br>
+        </fieldset>
+
+       <fieldset>
+          <legend>2. Term Details</legend>
+          
+          <label for="termId">Term:</label>
+          <select id="termId">
+            <option value="">-- Loading Terms... --</option>
+          </select>
+
+          <a href="/admin/term-create.html" style="font-size: 0.8em; margin-left: 10px; background-color: #28a745; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; text-decoration: none; display: inline-block;"> Create New Term
+</a>
+
+          <button id="deleteTermBtn" type="button" style="font-size: 0.8em; margin-left: 10px; background-color: #ff4c4c; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px;">
+            Delete Selected Term
+          </button>
+
+          <br>
+
+          <label for="profId">Professor User ID:</label>
+          <input type="number" id="profId"><br>
+          <label for="location">Location:</label>
+          <input type="text" id="location" placeholder="Spark 102"><br>
+          <label for="maxStudents">Max Capacity:</label>
+          <input type="number" id="maxStudents" value="30"><br>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. Schedule Details</legend>
+          <label for="dayOfWeek">Day of Week:</label>
+          <select id="dayOfWeek">
+            <option value="">--Select Day--</option>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+          </select><br>
+          <label for="startTime">Start Time:</label>
+          <input type="time" id="startTime"><br>
+          <label for="endTime">End Time:</label>
+          <input type="time" id="endTime"><br>
+        </fieldset>
+
       </form>
-      <Button id="create">Create</Button>
+      <button id="create">Create Course & Schedule</button>
     </div>
   </body>
 </html>
