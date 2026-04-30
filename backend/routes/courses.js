@@ -19,7 +19,7 @@ router.get('/high-demand', async (req, res) => {
                 ct.location,
                 ct.availability,
                 ct.max_students,
-                t.term_name,
+                t.term_id, t.term_name,
                 COALESCE(
                     string_agg(DISTINCT cs.day_of_week || ' ' || to_char(cs.start_time, 'HH12:MI AM') || '-' || to_char(cs.end_time, 'HH12:MI AM'), ', '), 
                     'TBA'
@@ -35,7 +35,7 @@ router.get('/high-demand', async (req, res) => {
             GROUP BY 
                 ct.course_term_id, cd.course_name, cd.description, 
                 ct.location, ct.availability, ct.max_students, 
-                t.term_name, ct.professor_id, u.email
+                t.term_id, t.term_name, ct.professor_id, u.email
             HAVING COUNT(es.user_id) >= (ct.max_students * 0.8)
             ORDER BY currently_enrolled DESC;
         `;
@@ -62,7 +62,7 @@ router.get('/at-risk', async (req, res) => {
                 ct.location,
                 ct.availability,
                 ct.max_students,
-                t.term_name,
+                t.term_id, t.term_name,
                 COALESCE(
                     string_agg(DISTINCT cs.day_of_week || ' ' || to_char(cs.start_time, 'HH12:MI AM') || '-' || to_char(cs.end_time, 'HH12:MI AM'), ', '), 
                     'TBA'
@@ -78,7 +78,7 @@ router.get('/at-risk', async (req, res) => {
             GROUP BY 
                 ct.course_term_id, cd.course_name, cd.description, 
                 ct.location, ct.availability, ct.max_students, 
-                t.term_name, ct.professor_id, u.email
+                t.term_id, t.term_name, ct.professor_id, u.email
             HAVING COUNT(es.user_id) < 5
             ORDER BY currently_enrolled ASC; -- Sort ascending so the emptiest courses are at the top!
         `;
@@ -98,7 +98,7 @@ router.get('/enrollment-totals', async (req, res) => {
         const query = `
             SELECT 
                 cd.course_name, 
-                t.term_name, 
+                t.term_id, t.term_name, 
                 ct.max_students,
                 COUNT(es.user_id) AS total_enrolled
             FROM Course_Terms ct
@@ -109,7 +109,7 @@ router.get('/enrollment-totals', async (req, res) => {
                 ON ct.course_term_id = es.course_term_id AND es.status = 'e'
             GROUP BY 
                 cd.course_name, 
-                t.term_name,
+                t.term_id, t.term_name,
                 ct.max_students
             ORDER BY total_enrolled DESC;
         `;
@@ -135,7 +135,10 @@ router.get('/', async (req, res) => {
                 ct.location,
                 ct.availability,
                 ct.max_students,
-                t.term_name,
+                t.term_id, t.term_name,
+                MAX(cs.day_of_week) as raw_day_of_week,
+                MAX(to_char(cs.start_time, 'HH24:MI')) as raw_start_time,
+                MAX(to_char(cs.end_time, 'HH24:MI')) as raw_end_time,
                 COALESCE(
                     string_agg(DISTINCT cs.day_of_week || ' ' || to_char(cs.start_time, 'HH12:MI AM') || '-' || to_char(cs.end_time, 'HH12:MI AM'), ', '), 
                     'TBA'
@@ -148,7 +151,7 @@ router.get('/', async (req, res) => {
             GROUP BY 
                 ct.course_term_id, cd.course_name, cd.description, 
                 ct.location, ct.availability, ct.max_students, 
-                t.term_name, ct.professor_id, u.email
+                t.term_id, t.term_name, ct.professor_id, u.email
             ORDER BY cd.course_name ASC;
         `;
         const result = await pool.query(query);
