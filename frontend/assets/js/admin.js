@@ -63,6 +63,7 @@ window.addEventListener("load", () => {
       let endpoint = 'http://localhost:5000/api/courses';
       if (filter === 'high-demand') endpoint = 'http://localhost:5000/api/courses/high-demand';
       else if (filter === 'enrollment-totals') endpoint = 'http://localhost:5000/api/courses/enrollment-totals';
+      else if (filter === 'at-risk') endpoint = 'http://localhost:5000/api/courses/at-risk'; // NEW
           
       const response = await fetch(endpoint);
       const courses = await response.json();
@@ -81,9 +82,16 @@ window.addEventListener("load", () => {
           if(courses.length === 0) coursesTable.innerHTML += `<tr><td colspan="7" style="text-align:center;">No courses match this filter.</td></tr>`;
 
           courses.forEach(course => {
+            let capacityBadge = '';
             const row = document.createElement("tr");
-            const capacityBadge = filter === 'high-demand' ? ` (${course.currently_enrolled}/${course.max_students} Full)` : '';
             const profDisplay = course.professor_email ? course.professor_email : '<em>Unassigned</em>';
+
+            // NEW
+            if (filter === 'high-demand') {
+                capacityBadge = ` <span style="color:red; font-weight:bold;">(${course.currently_enrolled}/${course.max_students} Full)</span>`;
+            } else if (filter === 'at-risk') {
+                capacityBadge = ` <span style="color:#ff8c00; font-weight:bold;">( Only ${course.currently_enrolled} enrolled)</span>`;
+            }
                 
             row.innerHTML = `
               <td><strong>${course.course_name}</strong><br><small>${course.term_name || 'No Term'}</small><span style="color:red; font-weight:bold;">${capacityBadge}</span></td>
@@ -183,7 +191,7 @@ window.addEventListener("load", () => {
     courseFilterDropdown.addEventListener('change', (e) => {
       const val = e.target.value;
       // Pass the selected filter to ONLY the tables it affects, leaving the others on 'all'
-      loadCourses(['high-demand', 'enrollment-totals'].includes(val) ? val : 'all');
+      loadCourses(['high-demand', 'enrollment-totals', 'at-risk'].includes(val) ? val : 'all');
       loadStudents(val === 'overloaded' ? val : 'all');
       loadEnrollments(['pending-queue', 'enrollments-by-term'].includes(val) ? val : 'all');
     });
