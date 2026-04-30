@@ -36,7 +36,7 @@ router.get('/high-demand', async (req, res) => {
                 ct.course_term_id, cd.course_name, cd.description, 
                 ct.location, ct.availability, ct.max_students, 
                 t.term_name, ct.professor_id, u.email
-            HAVING COUNT(es.user_id) >= (ct.max_students * 0.7)
+            HAVING COUNT(es.user_id) >= (ct.max_students * 0.8)
             ORDER BY currently_enrolled DESC;
         `;
         const result = await pool.query(query);
@@ -44,6 +44,49 @@ router.get('/high-demand', async (req, res) => {
     } catch (err) {
         console.error(err.message);
         res.status(500).json({ error: "Server error fetching high-demand courses" });
+    }
+});
+
+// For advanced query #6 - At Risk Courses
+// @route   GET /api/courses/at-risk
+// @desc    Fetch courses with critically low enrollment (< 5 students)
+router.get('/at-risk', async (req, res) => {
+    try {
+        const query = `
+            SELECT 
+                ct.course_term_id,
+                ct.professor_id,
+                u.email AS professor_email,
+                cd.course_name,
+                cd.description,
+                ct.location,
+                ct.availability,
+                ct.max_students,
+                t.term_name,
+                COALESCE(
+                    string_agg(DISTINCT cs.day_of_week || ' ' || to_char(cs.start_time, 'HH12:MI AM') || '-' || to_char(cs.end_time, 'HH12:MI AM'), ', '), 
+                    'TBA'
+                ) as schedule_times,
+                COUNT(es.user_id) AS currently_enrolled
+            FROM Course_Terms ct
+            JOIN Course_Details cd ON ct.course_id = cd.course_id
+            LEFT JOIN Terms t ON ct.term_id = t.term_id
+            LEFT JOIN Course_Schedules cs ON ct.course_term_id = cs.course_term_id
+            LEFT JOIN Users u ON ct.professor_id = u.user_id
+            LEFT JOIN Enrollment_Status es 
+                ON ct.course_term_id = es.course_term_id AND es.status = 'e'
+            GROUP BY 
+                ct.course_term_id, cd.course_name, cd.description, 
+                ct.location, ct.availability, ct.max_students, 
+                t.term_name, ct.professor_id, u.email
+            HAVING COUNT(es.user_id) < 5
+            ORDER BY currently_enrolled ASC; -- Sort ascending so the emptiest courses are at the top!
+        `;
+        const result = await pool.query(query);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error fetching at-risk courses" });
     }
 });
 
