@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Create New Term</title>
+    <script src="/assets/js/term-create.js"></script>
+    <link rel="stylesheet" href="/assets/style.css">
+  </head>
+  <body>
+    <button onclick="window.location.href='/admin/course-edit.html'">< Back to Course Creation</button>
+    
+    <div class="login">
+      <h2>Create New Term</h2>
+      <form id="termForm">
+        <label for="termName">Term Name (e.g., Fall 2026):</label><br>
+        <input type="text" id="termName" required><br><br>
+
+        <label for="startDate">Start Date:</label><br>
+        <input type="date" id="startDate" required><br><br>
+
+        <label for="endDate">End Date:</label><br>
+        <input type="date" id="endDate" required><br><br>
+
+        <button id="createTermBtn">Create Term</button>
+      </form>
+    </div>
+  </body>
+</html>

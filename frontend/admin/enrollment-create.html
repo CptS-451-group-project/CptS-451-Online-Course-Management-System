@@ -10,12 +10,17 @@
     <div class="login">
         <h2>Create new Enrollment</h2>
         <form>
-            <label for="studentId">Student ID:</label><br>
-            <input type="text" id="studentId" name="courseId"><br>
-            <label for="courseId">Course ID:</label><br>
-            <input type="text" id="courseId" name="courseId"><br>
+            <label for="studentId">Select Student:</label><br>
+            <select id="studentId" name="studentId">
+                <option value="">-- Loading Students... --</option>
+            </select><br><br>
+
+            <label for="courseId">Select Course Offering:</label><br>
+            <select id="courseId" name="courseId">
+                <option value="">-- Loading Courses... --</option>
+            </select><br><br>
         </form>
-        <Button id="create">Create</Button>
+        <button id="create">Create Enrollment</button>
     </div>
   </body>
 </html>

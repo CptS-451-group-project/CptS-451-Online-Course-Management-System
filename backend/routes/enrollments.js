@@ -75,6 +75,12 @@ router.post('/', async (req, res) => {
             RETURNING *;
         `;
         const result = await pool.query(query, [course_term_id, user_id]);
+
+// If nothing was returned, the ON CONFLICT block prevented a duplicate
+        if (result.rows.length === 0) {
+             return res.status(400).json({ error: 'This student is already enrolled or pending in this course.' });
+        }
+
         res.status(201).json(result.rows[0]);
     } catch (err) {
         // 23505 = duplicate PK; 23503 = bad FK; trigger may fire on status change elsewhere
