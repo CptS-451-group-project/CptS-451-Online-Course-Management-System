@@ -1,0 +1,26 @@
+{
+  "byCode": {
+    "23505": {
+      "status": 409,
+      "message": "That value already exists (duplicate record)."
+    },
+    "23503": {
+      "status": 400,
+      "message": "This action conflicts with related data (invalid reference or delete blocked)."
+    },
+    "23502": {
+      "status": 400,
+      "message": "A required field is missing."
+    },
+    "23514": {
+      "status": 400,
+      "message": "Data failed a validation rule."
+    },
+    "P0001": {
+      "status": 400,
+      "message": "Database rule prevented this action."
+    }
+  },
+  "byConstraint": {},
+  "byCodeConstraint": {}
+}

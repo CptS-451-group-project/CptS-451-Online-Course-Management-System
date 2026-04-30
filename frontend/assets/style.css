@@ -1,6 +1,18 @@
+:root {
+  --wsu-crimson: #981e32;
+  --wsu-crimson-dark: #7a1828;
+  --wsu-gray-light: #f6f7f8;
+  --wsu-gray-mid: #d9dde1;
+  --wsu-text: #1f2328;
+  --wsu-white: #ffffff;
+}
+
 body {
   width: 90%;
   margin: auto;
+  background-color: var(--wsu-gray-light);
+  color: var(--wsu-text);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 * {
@@ -9,13 +21,20 @@ body {
 
 button {
   padding: 4px;
-
-  border: 1px solid black;
+  background-color: var(--wsu-crimson);
+  color: var(--wsu-white);
+  border: 1px solid var(--wsu-crimson-dark);
   border-radius: 3px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--wsu-crimson-dark);
 }
 
 td {
-  border: 1px solid black;
+  border: 1px solid var(--wsu-gray-mid);
+  background-color: var(--wsu-white);
 }
 
 .header {
@@ -50,8 +69,9 @@ td {
   display: flex;
   flex-direction: column;
 
-  border: 1px solid black;
+  border: 1px solid var(--wsu-gray-mid);
   border-radius: 6px;
+  background-color: var(--wsu-white);
 
   text-align: center;
 }
@@ -74,8 +94,9 @@ td {
 
   padding: 15px;
 
-  border: 1px solid black;
+  border: 1px solid var(--wsu-gray-mid);
   border-radius: 6px;
+  background-color: var(--wsu-white);
 }
 
 .login > p:nth-child(2n + 1) {
@@ -96,7 +117,7 @@ td {
 }
 
 .selected {
-  background-color: #AAAAAA;
+  background-color: #eceff2;
 }
 
 .cartBox {
@@ -115,7 +136,8 @@ td {
 .box {
   padding: 10px;
 
-  border: 1px solid black;
+  border: 1px solid var(--wsu-gray-mid);
+  background-color: var(--wsu-white);
 }
 
 .details {
@@ -143,7 +165,8 @@ td {
   align-items: center;
   justify-content: center; 
 
-  border-top: 1px solid black;
+  border-top: 1px solid var(--wsu-gray-mid);
+  background-color: var(--wsu-white);
 }
 
 .pageFooter {
@@ -156,7 +179,8 @@ td {
   align-items: center;
   justify-content: center; 
 
-  border-top: 1px solid black;
+  border-top: 1px solid var(--wsu-gray-mid);
+  background-color: var(--wsu-white);
 }
 
 .enrollBox > .footer > Button {

@@ -4,8 +4,8 @@ require('dotenv').config();
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false // Required by Render to connect from outside
-    }
+        rejectUnauthorized: false, // Required for Render Postgres from your machine
+    },
 });
 
 module.exports = pool;
