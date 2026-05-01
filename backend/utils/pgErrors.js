@@ -5,7 +5,9 @@
 const fs = require('fs');
 const path = require('path');
 const pgErrorCatalog = require('./pgErrorCatalog.json');
+// Keep a writable path so unknown DB errors can be promoted into known mappings.
 const CATALOG_PATH = path.join(__dirname, 'pgErrorCatalog.json');
+// Feature flag: only auto-add unknown errors when this env var is explicitly true.
 const AUTO_PROMOTE_UNKNOWN_PG = process.env.AUTO_PROMOTE_UNKNOWN_PG === 'true';
 
 // Official SQLSTATE codes used by node-postgres on `err.code`
@@ -24,6 +26,8 @@ function cleanRaiseMessage(message) {
     return message.replace(/^ERROR:\s*/i, '').replace(/\n.*$/s, '').trim();
 }
 
+// Lookup order is most specific -> most general:
+// code+constraint, then constraint, then code.
 function lookupCatalog(err) {
     const code = err && err.code;
     const constraint = err && err.constraint;
@@ -40,6 +44,7 @@ function lookupCatalog(err) {
     return null;
 }
 
+// Unknown PG errors are logged as JSON lines so they are easy to review/filter later.
 function logUnknownPostgresError(err, options = {}) {
     const logDir = path.join(__dirname, '../logs');
     const logFile = path.join(logDir, 'unknown-pg-errors.log');
@@ -69,6 +74,8 @@ function buildAutoMessage(err) {
     return 'Database rejected this request.';
 }
 
+// Optional "learning" step: when enabled, write a starter catalog entry for new errors.
+// This never overwrites existing manual mappings.
 function autoPromoteUnknownPostgresError(err) {
     if (!AUTO_PROMOTE_UNKNOWN_PG || !err || !err.code) return false;
 
@@ -196,7 +203,8 @@ function sendPgError(res, err, options = {}) {
         return true;
     }
 
-    // Not a mapped Postgres code (e.g. network); still return JSON so fetch().json() works
+    // Unknown/unmapped path: keep the frontend stable with fallback JSON,
+    // and record technical details for developers.
     if (err && err.code) {
         logUnknownPostgresError(err, { context });
         autoPromoteUnknownPostgresError(err);

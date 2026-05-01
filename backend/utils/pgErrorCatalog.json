@@ -1,4 +1,5 @@
 {
+  "_comment": "Known Postgres error mappings used by pgErrors.js. Prefer adding specific constraint entries before broad code-level defaults.",
   "byCode": {
     "23505": {
       "status": 409,
