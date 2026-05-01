@@ -41,6 +41,32 @@ window.addEventListener("load", () => {
         option.textContent = term.term_name; 
         termIdFld.appendChild(option);
       });
+
+      // Auto-populate edit view if editing an existing course after terms load
+      if (courseId) {
+        fetch('/api/courses')
+          .then(res => res.json())
+          .then(courses => {
+            const course = courses.find(c => c.course_term_id == courseId);
+            if (course) {
+              courseNameFld.value = course.course_name || "";
+              descriptionFld.value = course.description || "";
+              profIdFld.value = course.professor_id || "";
+              if(course.location) locationFld.value = course.location;
+              if(course.max_students) maxStudentsFld.value = course.max_students;
+              // Map the loaded term
+              if(course.term_id) termIdFld.value = course.term_id;
+              
+              // Map the raw schedule details
+              if(course.raw_day_of_week) dayOfWeekFld.value = course.raw_day_of_week;
+              if(course.raw_start_time) startTimeFld.value = course.raw_start_time;
+              if(course.raw_end_time) endTimeFld.value = course.raw_end_time;
+              
+              createBtn.textContent = "Save Changes";
+            }
+          })
+          .catch(err => console.error('Error fetching course for auto-population:', err));
+      }
     } catch (err) {
       console.error("Error in loadTerms:", err);
       termIdFld.innerHTML = '<option value="">Error loading terms</option>';
