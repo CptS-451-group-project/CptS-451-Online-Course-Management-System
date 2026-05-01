@@ -13,21 +13,32 @@ const ALLOWED_ROLES = ['Professor', 'Student', 'Administrator'];
 
 /** Trim + lowercase so " User@School.edu " matches login and can't duplicate accounts. */
 function normalizeEmail(email) {
-    return String(email).trim().toLowerCase();
+    return String(email).replace(/\s+/g, '').toLowerCase();
+}
+
+/** Remove all spaces so "s d f g" becomes "sdfg". */
+function normalizeCompactText(value) {
+    if (value === undefined || value === null) return null;
+    const compact = String(value).replace(/\s+/g, '');
+    return compact === '' ? null : compact;
 }
 
 // @route   POST /api/auth/register
 // @desc    Register a new user
 router.post('/register', async (req, res) => {
     try {
-        const { email, password, role_name } = req.body;
+        const { email, password, role_name, first_name, middle_initial, last_name } = req.body;
 
         // Basic validation
         if (!email || !password || !role_name) {
             return res.status(400).json({ message: 'Please provide email, password, and role_name' });
         }
 
+        // Normalize input once, then use normalized values for all DB operations.
         const emailNorm = normalizeEmail(email);
+        const firstNameNorm = normalizeCompactText(first_name);
+        const middleInitialNorm = normalizeCompactText(middle_initial);
+        const lastNameNorm = normalizeCompactText(last_name);
 
         if (!ALLOWED_ROLES.includes(role_name)) {
             return res.status(400).json({
@@ -35,7 +46,7 @@ router.post('/register', async (req, res) => {
             });
         }
 
-        // Check if user already exists (case-insensitive; matches stored rows even if created before normalization)
+        // Enforce email uniqueness on normalized value so spacing/case variants map to one account.
         const userExists = await pool.query(
             'SELECT * FROM Users WHERE lower(trim(email)) = $1',
             [emailNorm]
@@ -48,10 +59,12 @@ router.post('/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const password_hash = await bcrypt.hash(password, salt);
 
-        // Insert user into database
+        // Save normalized names/email to keep data consistent for search/login/display.
         const newUser = await pool.query(
-            'INSERT INTO Users (email, password_hash, role_name) VALUES ($1, $2, $3) RETURNING user_id, email, role_name',
-            [emailNorm, password_hash, role_name]
+            `INSERT INTO Users (first_name, middle_initial, last_name, email, password_hash, role_name)
+             VALUES ($1, $2, $3, $4, $5, $6)
+             RETURNING user_id, first_name, middle_initial, last_name, email, role_name`,
+            [firstNameNorm, middleInitialNorm, lastNameNorm, emailNorm, password_hash, role_name]
         );
 
         res.status(201).json({
@@ -80,6 +93,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Please provide email and password' });
         }
 
+        // Login uses the same email normalization as registration.
         const emailNorm = normalizeEmail(email);
 
         // Match register lookup so login works regardless of spacing/casing in request or DB
