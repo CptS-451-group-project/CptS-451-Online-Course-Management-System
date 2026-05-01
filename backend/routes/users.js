@@ -38,6 +38,28 @@ router.get('/overloaded', async (req, res) => {
     }
 });
 
+// Get a specific student
+router.get('/:id', async (req, res) => {
+    try {
+         const { id } = req.params;
+
+        // Basic validation
+        if (!id) {
+            return res.status(400).json({ message: 'Please provide a valid user ID' });
+        }
+
+        // Exclude passwords from return logic
+        const result = await pool.query(
+            `SELECT user_id, email, role_name, first_name, middle_initial, last_name 
+             FROM Users WHERE user_id=$1`,
+             [id]);
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: "Server error retrieving user." });
+    }
+});
+
 // @route   GET /api/users
 // @desc    Get all students/users for Admin View
 router.get('/', async (req, res) => {

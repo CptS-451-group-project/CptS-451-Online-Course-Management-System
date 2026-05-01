@@ -1,34 +1,71 @@
 "use strict"
 window.addEventListener("load", () => {
   // Element Objects of all the fields and buttons in the html
-  const studentIdFld   = document.getElementById("studentId");
-  const studentNameFld = document.getElementById("studentName");
-  const studentEmailFld = document.getElementById("studentEmail");
-  const newPasswordFld = document.getElementById("newPassword");
+  const userIdFld        = document.getElementById("userId");
+  const roleFld          = document.getElementById("role");
+  const firstNameFld     = document.getElementById("firstName");
+  const middleInitialFld = document.getElementById("middleInitial");
+  const lastNameFld      = document.getElementById("lastName");
+  const emailFld         = document.getElementById("email");
+  const newPasswordFld   = document.getElementById("newPassword");
 
-  const createBtn = document.getElementById("create");
+  const createBtn   = document.getElementById("create");
 
   // Get studentId if providedstudentId
-  const studentId = window.location.search.substring(11);
-  studentIdFld.value = studentId;
-
+  const userId = window.location.search.substring(11);
+  userIdFld.value = userId;
 
   // Disable userId field
-  studentIdFld.disabled = true;
+  userIdFld.disabled = true;
+
+  // Student is the default role
+  roleFld.value = "Student" 
+
+  // Autopopulate
+  const loadUser = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/' + userId, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+
+      console.log(data);
+
+      if (!response.ok) {
+        alert("Action Denied by Database: " + (data.message || data.error || "Unknown Error"));
+        return;
+      }
+
+      roleFld.value          = data[0].role_name;
+      firstNameFld.value     = data[0].first_name;
+      middleInitialFld.value = data[0].middle_initial;
+      lastNameFld.value      = data[0].last_name;
+      emailFld.value         = data[0].email;
+   }
+   catch (err) {
+      console.error(err);
+      alert("Network Error: " + err.message);
+    } 
+  }
+  
+  if(userId != "") {
+    loadUser();
+  }
 
   // Rest of code here
   createBtn.addEventListener("click", async (e) => {
     e.preventDefault();
 
-    if (!studentNameFld.value || !newPasswordFld.value) {
-      alert("Please enter both a student name (email) and password.");
+    if (!firstNameFld.value || !roleFld.value || !newPasswordFld.value) {
+      alert("Please enter both a user first name, role, and password.");
       return;
     }
 
     // Remove user if they already exist (modify not a method in backend yet)
-    if(studentId != "") {
+    if(userId != "") {
       try {
-      const res = await fetch(`http://localhost:5000/api/users/${studentId}`, { method: 'DELETE' });
+      const res = await fetch(`http://localhost:5000/api/users/${userId}`, { method: 'DELETE' });
       const errInfo = await res.json();
       if (!res.ok) throw new Error(errInfo.error || "Unknown Error");
 
@@ -40,9 +77,12 @@ window.addEventListener("load", () => {
     } 
 
     const payload = {
-      email: studentEmailFld.value, // "Name" acts as email since auth needs email
+      email: emailFld.value, // "Name" acts as email since auth needs email
       password: newPasswordFld.value,
-      role_name: "Student" // default role for this form
+      role_name: roleFld.value,
+      first_name: firstNameFld.value,
+      middle_initial: middleInitialFld.value,
+      last_name: lastNameFld.value
     };
 
     try {

@@ -7,6 +7,38 @@ window.addEventListener("load", () => {
   const enrollmentsTable = document.getElementById("enrollmentsTable");
   const courseFilterDropdown = document.getElementById("courseFilterDropdown");
 
+  // Populate userId field
+  const thisUserId = window.location.search.substring(8);
+  userId.innerHTML = thisUserId;
+
+  // Populate userId name
+  const loadUserName = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/users/' + thisUserId, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await response.json();
+
+      console.log(data);
+
+      if (!response.ok) {
+        alert("Action Denied by Database: " + (data.message || data.error || "Unknown Error"));
+        return;
+      }
+
+      userName.innerHTML = data[0].first_name + " " + data[0].last_name;
+   }
+   catch (err) {
+      console.error(err);
+      alert("Network Error: " + err.message);
+    } 
+  }
+  
+  if(thisUserId != "") {
+    loadUserName();
+  }
+
   // Helper function to get current filter state
   const getCurrentFilter = () => courseFilterDropdown ? courseFilterDropdown.value : 'all';
 

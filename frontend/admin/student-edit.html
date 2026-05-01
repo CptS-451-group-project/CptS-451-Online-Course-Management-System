@@ -7,17 +7,35 @@
   </head>
   <body>
     <button onclick="window.location.href='/admin/index.html'">< Back to Dashboard</button>
-    <div class="login">
+    <div  class="login" style="width: 70%; display: block;">
       <h2>Edit / Create Student</h2>
       <form>
-        <label for="studentId">Student ID:</label><br>
-        <input type="text" id="studentId" name="courseId"><br>
-        <label for="studentName">Student Name:</label><br>
-        <input type="text" id="studentName" name="studentName"><br>
-        <label for="studentEmail">Student Email:</label><br>
-        <input type="text" id="studentEmail" name="studentEmail"><br>
-        <label for="newPassword">New Student Password:</label><br>
-        <input type="text" id="newPassword" name="newPassword"><br>
+        <fieldset>
+        <legend>1. General User Information</legend>
+        <label for="userId">User ID:</label><br>
+        <input type="text" id="userId" name="userId"><br>
+        <label for="role">Role:</label><br>
+        <input type="text" id="role" name="role"><br>
+        </fieldset>
+
+        <fieldset>
+          <legend>2. Personal Details</legend>
+          <label for="firstName">First Name:</label><br>
+          <input type="text" id="firstName" name="firstName"><br>
+          <label for="middleInitial">Middle Initial:</label><br>
+          <input type="text" id="middleInitial" name="middleInitial"><br>
+          <label for="lastName">Last Name:</label><br>
+          <input type="text" id="lastName" name="lastName"><br>
+        </fieldset>
+
+        <fieldset>
+          <legend>3. Login details</legend>
+          <label for="email">Student Email:</label><br>
+          <input type="text" id="email" name="email"><br>
+          <label for="newPassword">New Student Password:</label><br>
+          <input type="text" id="newPassword" name="newPassword"><br>
+        </fieldset>
+
       </form>
       <Button id="create">Create</Button>
     </div>

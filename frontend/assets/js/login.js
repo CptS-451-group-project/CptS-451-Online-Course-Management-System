@@ -4,14 +4,6 @@ window.addEventListener("load", () => {
 	const passwdField = document.getElementById("password");
 	const loginBtn    = document.getElementById("loginBtn");
 
-	let checkLogin = function() {
-		let email = userIdField.value;
-		let passwd = passwdField.value;
-2
-    sendQuery(email, passwd);
-    //redirect();
-	}
-
 	loginBtn.addEventListener("click", async (e) => {
 		let email = userIdField.value;
 		let passwd = passwdField.value;
@@ -29,24 +21,21 @@ window.addEventListener("load", () => {
       });
       const data = await response.json();
 
-      console.log("here!");
+      console.log(data);
 
       if (!response.ok) {
         alert("Action Denied by Database: " + (data.message || data.error || "Unknown Error"));
         return;
       }
 
-	  redirect();
+	  redirect(data.user.id);
     } catch (err) {
       console.error(err);
       alert("Network Error: " + err.message);
     } 
 	});
 
-	let redirect = function() {
-		window.location.replace("/admin");
+	let redirect = function(userId) {
+		window.location.replace("/admin?userId=" + userId);
 	}
-
-
-	//loginBtn.addEventListener("click", checkLogin);
 });
